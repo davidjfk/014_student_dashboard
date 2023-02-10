@@ -16,7 +16,7 @@ import {
 
 import {createArrayWithUniqueValues, log } from '../../utils';
 
-const DashboardOverview = () => {
+const LineChart = () => {
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);
     log('comp DashboardOverview:');
     log(studentsMockData);
@@ -138,27 +138,16 @@ const DashboardOverview = () => {
 <div>
         <VictoryChart width={600} height={470} scale={{ x: "time" }}
           containerComponent={
-                <VictoryZoomContainer
-                zoomDimension="x"
-                zoomDomain={zoomDomain}
-                //   onZoomDomainChange={this.handleZoom.bind(this)}
-                />
-            }
+            <VictoryZoomContainer
+              zoomDimension="x"
+              zoomDomain={zoomDomain}
+            //   onZoomDomainChange={this.handleZoom.bind(this)}
+            />
+          }
         >
-            <VictoryBar //was: VictoryLine 
-            /*
-                in 'Brush and Zoom' code from https://formidable.com/open-source/victory/gallery/brush-and-zoom
-                I have only replaced the component 'VictoryLabel' by (see line above this comment) 'VictoryBar',
-                to create a basic 'Brush and Zoom BarChart'.
-                status: ok.
-            */
+            <VictoryLine
               style={{
-                data: { stroke: "tomato" } 
-                /*
-                    2do: update style with 'wincTheme' from example code from Winc-dentist-assignment.
-                    see: https://github.com/WincAcademy/StudentDashboardExample . Enhance
-                    this code with that of style-object 'line'. 
-                */
+                data: { stroke: "tomato" }
               }}
               data={[
                 { a: new Date(1982, 1, 1), b: 125 },
@@ -174,11 +163,7 @@ const DashboardOverview = () => {
               y="b"
             />
 
-
-
-
           </VictoryChart>
-
           <VictoryChart
             padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
             width={600} height={100} scale={{ x: "time" }}
@@ -193,7 +178,7 @@ const DashboardOverview = () => {
             <VictoryAxis
               tickFormat={(x) => new Date(x).getFullYear()}
             />
-            <VictoryBar //was: VictoryLine 
+            <VictoryLine
               style={{
                 data: { stroke: "tomato" }
               }}
@@ -229,4 +214,4 @@ const DashboardOverview = () => {
   )
 }
 
-export default DashboardOverview
+export default LineChart

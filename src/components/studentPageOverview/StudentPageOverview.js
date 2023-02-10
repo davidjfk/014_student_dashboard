@@ -2,17 +2,17 @@ import React from 'react';
 import { useSelector } from "react-redux";
 import {Routes, Route, Link } from "react-router-dom";
 // import {Link} from 'react-router-dom';
-import { createArrayWithUniqueStudentNames, log } from '../../utils';
+import { createArrayWithUniqueValues, log } from '../../utils';
 import Student from '../student/Student';
 
 
 const StudentPageOverview = () => {
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);
     log('comp StudentPage:');
-    log(studentsMockData);
+    // log(studentsMockData);
 
-    let listOfUniqueStudentNames = createArrayWithUniqueStudentNames(studentsMockData, "studentName");
-    log(listOfUniqueStudentNames);
+    const listOfUniqueStudentNames = createArrayWithUniqueValues(studentsMockData, "studentName");
+    // log(listOfUniqueStudentNames);
 
 
   return (
