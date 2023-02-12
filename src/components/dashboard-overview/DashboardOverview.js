@@ -20,7 +20,7 @@ import {BrushAndZoomWithBarChart} from '../brushAndZoomWithBarChart/BrushAndZoom
 import {
     calculateAverageForDifficultyForOneAssignmentOfAllStudents,
     calculateAverageForFunForOneAssignmentOfAllStudents,
-    createArrayWithObjects,
+    createArrayWithAssignmentObjects,
     createArrayWithUniqueValues, 
     createAssignmentObjectForEachAssignmentId,
     log } from '../../utils';
@@ -47,7 +47,7 @@ const DashboardOverview = () => {
             - key difficult with value 'empty array'. 
             - key fun with value 'empty array'. 
     */
-    const arrayWithAssignmentObjects = createArrayWithObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
+    const arrayWithAssignmentObjects = createArrayWithAssignmentObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
     log(`arrayWithAssignmentObjects: `)
     log(arrayWithAssignmentObjects);  
     /*

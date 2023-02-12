@@ -182,24 +182,22 @@ ANALYSIS:
 
     Victory has component for scatterplot. Semantically, scatterplot is not related to the other victory charts, 
     so scatterplot will get its own  link and route in the navbar.
-
-    as a user, I want to be able to indicate by means of a checkbox  whether I only want to show in the bar chart how nice the assignment was, only want to see how difficult the assignment was, or both.
-
+       
 
 DESIGN:
     scatterplot 1:
-    All students (10) on X-axis with their individual average fun-socre andon Y-axis with their individual average difficult-score: so 
-    for each student you can see how the average fun correlates with average diffiicult.
-
-    scatterplot 2:
     All assignments (56) on X-axis with average fun-score of 10 students, and on Y-axis assignments (56) with average difficult score of 10 students: so 
     for each assignment you can see "on average" how the perceived fun-score and difficult-score correlate. 
+
+    scatterplot 2:
+    All students (10) on X-axis with their individual average fun-socre andon Y-axis with their individual average difficult-score: so 
+    for each student you can see how the average fun correlates with average diffiicult.
 
 
     STEP1: transform the data so it can be fed into the dumb component scatterplot as props-object.
     STEP2: feed data into the dumb component scatterplot as props-object.
-    STEP3: add the filter-functionality with 2 checkboxes: 1 for 'fun' and 1 for 'difficult'. Checkbox will be a dumb component with form-ui-control, connected to this smart component.
-
+    STEP3: calculate correlation coefficient for both scatterplots and analyse/ interpret the result. 
+    STEP4: style the 2 scatterplots. 
 
 # branch_05_dashboard_overview_with_slice_and_dice_and_bonus_requirements
         (continuation of the code from branch_02_dashboard_overview)
@@ -261,11 +259,19 @@ DESIGN:
             (a) fun + difficult combined per assignment for 1 selected student.
             (b) fun per assignment for 1 selected student.
             (c) difficult per assignment for 1 selected student. 
+
+            1. smart component:transform data and feed it into the dumb components as props-object.
+            2. dumb component: 10 students will populate the x-axis, instead of 56 assignments. 
+                The y-axis -as a result of this - will contain 'average grade per student', instead of 'average grade per assignment'. 
+                So I need a new - read: modified - victory chart 'M' to implement this. 
+                Semantically, 'M' is different from the other victory charts, so 'M' gets its own link and route in the navbar.  
+                implement 'M' as barchart and linechart.
             
-            This definition requires that the calculation of the average grade takes into account the values of the checkboxes (i.e. checked or not checked) of requirement 1 <br/>
-            (see chapter 'Other requirements' at the  end of this document) about slicing and  dicing option 1 (remark: option 2 is only relevant on the dashboard_overview !). <br/>
-            I will create a 'props-pipeline' in which these variables (how to sort?, on what to filter: i.e. fun and/or difficult ? ) can interact. <br/>
-            Remark: 'nr of students? can vary in the dashboard_overview, but on the StudentPages only 1 student can be selected at a time !
+                This definition requires that the calculation of the average grade takes into account the values of the checkboxes (i.e. checked or not checked or display of 'difficult' and/or 'fun).
+            3.  scope: page Student Dashboard.
+            4.  how2 implement: create a 'props-pipeline' in which these variables (how to sort?, on what to filter: i.e. fun and/or difficult ? ) 
+                can interact. 
+                Remark: 'nr of students? can vary in the dashboard_overview, but on the StudentPages only 1 student can be selected at a time !
 
 
         7. bonus: user profiles: 
