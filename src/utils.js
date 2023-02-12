@@ -100,8 +100,30 @@ export const createArrayWithObjects = (createAssignmentObjectForEachAssignmentId
 arrayWithPrimitiveValues.map(primitiveValue => createAssignmentObjectForEachAssignmentId(studentsMockData, primitiveValue));
 
 
-
-
 export const generateRandomPersonId = () => Math.floor(10000000 + Math.random() * 9000000); // 7 digits
 
 export const log = console.log;
+
+
+// //3of3:
+// export const makeAssignmentIdShort = (item, idLength) => {
+//     if (item.length > idLength) {
+//         return item.slice(0,4).trim();
+//     }
+//     return item
+// }
+
+// //2of3:
+// export const createAssignmentObjectForEachAssignmentId = (studentMockData, assignmentId) => ({
+//     assignmentId,
+//     assignmentIdShort: makeAssignmentIdShort(assignmentId, 6), // works
+//     difficulty: calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId),
+//     fun: calculateAverageForFunForOneAssignmentOfAllStudents(studentMockData, assignmentId),
+//     label: `Opdracht ${ assignmentId
+//     }, difficultyRating: ${calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId).toFixed(1)}, 
+//     enjoymentRating: ${calculateAverageForFunForOneAssignmentOfAllStudents(studentMockData, assignmentId).toFixed(1)}`
+// });
+
+// //1of3: 
+// export const createArrayWithObjects = (createAssignmentObjectForEachAssignmentId, studentsMockData, arrayWithPrimitiveValues) =>
+// arrayWithPrimitiveValues.map(primitiveValue => createAssignmentObjectForEachAssignmentId(studentsMockData, primitiveValue));

@@ -15,6 +15,8 @@ import {
     VictoryAxis 
 } from "victory";
 
+import {BrushAndZoomWithBarChart} from '../brushAndZoomWithBarChart/BrushAndZoomWithBarChart'
+
 import {
     calculateAverageForDifficultyForOneAssignmentOfAllStudents,
     calculateAverageForFunForOneAssignmentOfAllStudents,
@@ -37,6 +39,7 @@ const DashboardOverview = () => {
     const listOfUniqueAssignmentIds = createArrayWithUniqueValues(studentsMockData, "assignmentId");
     log(`listOfUniqueAssignmentIds: `)
     log(listOfUniqueAssignmentIds);
+    
     /*
         BRANCH_02: DESIGN: 4b) 
         Create array with 56 assignment-objects. Each object contains 3 keys: 
@@ -44,8 +47,6 @@ const DashboardOverview = () => {
             - key difficult with value 'empty array'. 
             - key fun with value 'empty array'. 
     */
-
-    
     const arrayWithAssignmentObjects = createArrayWithObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
     log(`arrayWithAssignmentObjects: `)
     log(arrayWithAssignmentObjects);  
@@ -68,21 +69,17 @@ const DashboardOverview = () => {
 
 
 
-    let assignmentId = "SCRUM";
-    let averageGradeDifficulty = calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentsMockData, assignmentId);
-    log(`averageGradeDifficulty: `)
-    log(averageGradeDifficulty);
+    // let assignmentId = "SCRUM";
+    // let averageGradeDifficulty = calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentsMockData, assignmentId);
+    // log(`averageGradeDifficulty: `)
+    // log(averageGradeDifficulty);
+
 
     const [zoomDomain, setZoomDomain] = useState({x: [0, 10], y: [0, 5]}); // nr of assignments to display when you open the page.
     // 'zoomDomain' more info: https://formidable.com/open-source/victory/docs/victory-zoom-container#zoomdomain
 
-//theme={wincTheme}
-
   return (
     <>
-
-
-<div>
         <VictoryChart 
             theme={wincTheme} 
             width={800} 
@@ -156,7 +153,7 @@ const DashboardOverview = () => {
                     x = "assignmentIdShort"
                     y = "fun"
                     // tickValues={['1.0', '2.0', '3.0', '4.0', '5.0']}
-                    // tickValues={[1, 2, 3, 4, 5]}
+                    tickValues={[1, 2, 3, 4, 5]}
                     tickFormat={arrayWithAssignmentObjects.map(
                         avg => avg.assignmentId
                         )}
@@ -245,7 +242,6 @@ const DashboardOverview = () => {
                 }}
             />
           </VictoryChart>
-
 
 
         {/* VictoryBrushContainer: */}
@@ -351,7 +347,6 @@ const DashboardOverview = () => {
             }}
         />
         </VictoryChart>
-      </div>
     </>
   )
 }
