@@ -16,25 +16,25 @@ const StudentPageOverview = () => {
 
 
   return (
-    <div className="studentPage">student page overview 
-    {listOfUniqueStudentNames.map((student) => (  
-        <div key={student}>
-        <Link to={`student/${student}`}>{student} </Link>
-        </div>
-    ))}
-    <Routes>
-        <Route path="/student/:id" element={
-                    <>
-                        <Student />
-                    </>
-                } />  
-    </Routes>
 
     <>
+    
+    <div className="studentPage">student page overview 
+        {listOfUniqueStudentNames.map((student) => (  
+            <div key={student}>
+            <Link to={`student/${student}`}>{student} </Link>
+            </div>
+        ))}
 
-    </>
-
+        <Routes>
+            <Route path="/student/:id" element={
+                        <>
+                            <Student />
+                        </>
+                    } />  
+        </Routes>
     </div>
+    </>
   )
 }
 

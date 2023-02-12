@@ -166,7 +166,8 @@ DESIGN:
             grade of all students'. But no need to do this, because requirement: <br/>
             Tip: the chart remains the same on the X and Y axes, only gets "less" data, namely the data of 1 student.
 
-        3.  connect data to barchart in brush and zoom container. 
+        3.  connect data to barchart in brush and zoom container. If you click on a student on student pages, 
+            then the data of this one student is shown in a brush-and-zoom container. 
 
             (the remaining features will be implemented in 'branch_06_student_pages_with_slice_and_dice_and_bonus_requirements' )
 
