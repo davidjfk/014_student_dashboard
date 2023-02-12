@@ -1,68 +1,357 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import { useSelector } from "react-redux";
-import { log } from '../../utils';
+
+import {
+    VictoryZoomContainer,
+    VictoryBrushContainer,
+    VictoryBar,
+    VictoryChart,
+    VictoryGroup,
+    VictoryTooltip,
+    VictoryLabel,
+    VictoryLine,
+    VictoryPie,
+    VictoryAxis 
+} from "victory";
+
+import {
+    calculateAverageForDifficultyForOneAssignmentOfAllStudents,
+    calculateAverageForFunForOneAssignmentOfAllStudents,
+    createArrayWithObjects,
+    createArrayWithUniqueValues, 
+    createAssignmentObjectForEachAssignmentId,
+    log } from '../../utils';
+
+import {wincTheme} from "../../styles/wincTheme";
 
 const DashboardOverview = () => {
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);
     log('comp DashboardOverview:');
     log(studentsMockData);
+    /*
+        BRANCH_02: DESIGN: 4A) 
+        Create array with unique assignmentIds (e.g. W2D3-1) (should be 56 assignmentIds in this array 
+        in total as string-values). Use fn createArrayWithUniqueValues to create this array.
+    */
+    const listOfUniqueAssignmentIds = createArrayWithUniqueValues(studentsMockData, "assignmentId");
+    log(`listOfUniqueAssignmentIds: `)
+    log(listOfUniqueAssignmentIds);
+    /*
+        BRANCH_02: DESIGN: 4b) 
+        Create array with 56 assignment-objects. Each object contains 3 keys: 
+            - key assignmentId with value (e.g. W2D3-1)
+            - key difficult with value 'empty array'. 
+            - key fun with value 'empty array'. 
+    */
+
+    
+    const arrayWithAssignmentObjects = createArrayWithObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
+    log(`arrayWithAssignmentObjects: `)
+    log(arrayWithAssignmentObjects);  
+    /*
+        BRANCH_02: DESIGN: 4C) 
+            Create average for 'difficult: fn calculateAverageAssignmentDifficultyOfAllStudents
+            For key difficult, value is average of all 10 students for this assignmentId. Each 
+            student has 1 opinion about each assignment, given that there are 10 students). For 
+            this, filter datastructure 'A' (see point a above) on object-key 'assignmentId' 
+            (into a new array) AND then apply reduce fn on object-key 'difficult' to create 
+            average (1 decimal).
+    */  
+
+    /*
+        BRANCH_02: DESIGN: 4D) 
+            create average for 'fun': fn calculateAssignmentAverageFunLevelOfAllStudents
+            For key fun, same as for key 'difficult', but this time apply reduce fn on object-key 
+            'fun' to create average (also 1 decimal).
+    */  
+
+
+
+    let assignmentId = "SCRUM";
+    let averageGradeDifficulty = calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentsMockData, assignmentId);
+    log(`averageGradeDifficulty: `)
+    log(averageGradeDifficulty);
+
+    const [zoomDomain, setZoomDomain] = useState({x: [0, 10], y: [0, 5]}); // nr of assignments to display when you open the page.
+    // 'zoomDomain' more info: https://formidable.com/open-source/victory/docs/victory-zoom-container#zoomdomain
+
+//theme={wincTheme}
 
   return (
     <>
-        <div>dashboard-overview will contain  the following: </div>
-        <br/>
 
-        <p>Design: the steps below serve as a proof of concept, also for a big part of the other assignments as well.</p>
-        <p>Implementation order: 1 to 6. <br/>
-        First connect the transformed data to the dumb components in 1,2 and 3 below. This is needed, before you can move on with steps 4,5 and 6.</p> <br/>
 
-        <h2> 1. dashboard overview user-story: </h2>
-            <p> smart component: transform data from json file, in such a way that it can be fed into the x-axis and y-axis of the dumb components below.
-            </p>
-        <br/>
+<div>
+        <VictoryChart 
+            theme={wincTheme} 
+            width={800} 
+            height={350}    
+            //domainPadding has no effect.
+            //padding has undesirable effect.
+        //   style={{ data: { fill: "red" } }}
+        //   domain={{ y: [-10, 10] }}
+          containerComponent={
+                <VictoryZoomContainer 
+                zoomDimension="x" // ok, see: https://formidable.com/open-source/victory/docs/victory-zoom-container#zoomdomain
+                zoomDomain={zoomDomain}
+                // zoomDomain={{x: [0, 10]}} // in useState-hook above.
+                //   onZoomDomainChange={this.handleZoom.bind(this)}
+                />
+            }
+        >
+            <VictoryGroup offset={10} 
+                    // tickValues={['1.0', '2.0', '3.0', '4.0', '5.0']}
+                    style = {{
+                        // group: {
+                        //     colorScale: [
+                        //       "#F4511E",
+                        //       "#FFF59D",
+                        //       "#DCE775",
+                        //       "#8BC34A",
+                        //       "#00796B",
+                        //       "#006064"
+                        //     ]},
+                        data: {
+                            // fill: "yellow",
+                            padding: 10,
+                            strokeWidth: 5 // responds to change. 
+                        },
+                        labels: {
+                            fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
+                            fontSize: 8,
+                            letterSpacing: "normal",
+                            padding: 18,
+                            // fill: "#455A64",
+                            stroke: "transparent",
+                            strokeWidth: 0
+                        }
+                    }}            
+            >
+                {/* bar 1of3: */}
+                <VictoryBar 
+                    // style={{ data: { fill: "purple" } }} // chart responds to change
+                    style = {{
+                        data: {
+                            fill: "#D4E7FA", // do not put this prop in Theme. Light-blue from wincacademy.nl
+                            padding: 0,
+                            strokeWidth: 5 // bar width
+                        }
+                    }}
+                    labelComponent={
+                        <VictoryTooltip   
+                            style={{fontSize: '10px'}}
+                            flyoutWidth={310}
+                            flyoutHeight={60}
+                            cornerRadius={8}
+                            pointerLength={20}
+                            flyoutStyle={{
+                                // stroke: "tomato",
+                                strokeWidth: 1,
+                                // fill: "yellow",
+                            }}  
+                        />
+                    }
+                    data={arrayWithAssignmentObjects}
+                    x = "assignmentIdShort"
+                    y = "fun"
+                    // tickValues={['1.0', '2.0', '3.0', '4.0', '5.0']}
+                    // tickValues={[1, 2, 3, 4, 5]}
+                    tickFormat={arrayWithAssignmentObjects.map(
+                        avg => avg.assignmentId
+                        )}
+                />
+                {/* bar 2of3: */}
+                <VictoryBar 
+                    style = {{
+                        data: {
+                            fill: "#FCD808", // do not put this prop in Theme. Yellow from wincacademy.nl.
+                            padding: 0,
+                            strokeWidth: 5 // bar width
+                        },
+                        // labels: {
+                        //     fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
+                        //     fontSize: 8,
+                        //     letterSpacing: "normal",
+                        //     padding: 38,
+                        //     fill: "#455A64",
+                        //     stroke: "transparent",
+                        //     strokeWidth: 0
+                        // }
+                    }}
 
-        <br/>
-        <h2> 2. dashboard overview user-story: </h2>
-        <p>I need combi of smart component and dumb compoonent to implement this.</p>
-        <p> dumb component: as a user, when I open the homepage of the application I want to see an overview in the form of a bar chart of the evaluations (fun & difficult) of all students.
-        </p>
-        <p>As a user, I must be able to distinguish at a glance between the assignments and the fun/difficult evaluation. Make sure that a clear distinction is made visually, for example 
-            <br/> by working with clear colours. See the example with red and yellow below.
-        </p>
+                    labelComponent={
+                        <VictoryTooltip 
+                            style={{fontSize: '10px'}}
+                            flyoutWidth={310}
+                            flyoutHeight={60}
+                            cornerRadius={8}
+                            pointerLength={20}
+                            flyoutStyle={{
+                                // stroke: "tomato",
+                                strokeWidth: 1,
+                                // fill: "yellow",
+                            }} 
+                        />
+                    }                    
+                    data={arrayWithAssignmentObjects}
+                    x = "assignmentIdShort"
+                    y = "difficulty"
+                    tickValues={[1, 2, 3, 4, 5]}
+                    tickFormat={arrayWithAssignmentObjects.map(
+                        avg => avg.assignmentId
+                        )}
+                />   
+            </VictoryGroup>
+            <VictoryAxis 
+                // tickValues specifies both the number of ticks and where
+                // they are placed on the axis
+                // tickValues={[1.0, 2.0, 3, 4, 5]}
+                tickFormat={arrayWithAssignmentObjects.map(
+                avg => avg.assignmentIdShort 
+                /*
+                 pitfall: avg.assignmentId will display long names on x-axis: e.g. actual result:
+                 'W3D5 - Project - Todo-List' , instead of the expected result (to save space on x-axis) 'W3D5'.
+                */ 
+                )}
+                label="Assignment IDs"
+                style={{
+                    tickLabels: {
+                        // fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
+                        fontSize: 10,
+                        angle: 0,
+                        // letterSpacing: "normal",
+                        padding: 12,
+                        // fill: "#455A64",
+                        // stroke: "transparent",
+                        // strokeWidth: 0
+                      }
+                }}
+            />
+            <VictoryAxis dependentAxis 
+                label="Rating of assignment difficulty (blue) and fun (yellow)"
+                // tickValues={[1, 2, 3, 4, 5]}
+                style={{
+                    tickLabels: {
+                        // fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
+                        fontSize: 10,
+                        angle: 0,
+                        // letterSpacing: "normal",
+                        padding: 12,
+                        // fill: "#455A64",
+                        // stroke: "transparent",
+                        // strokeWidth: 0
+                      }
+                }}
+            />
+          </VictoryChart>
 
-        <br/>
-        <h2> 3. slicing and dicing option 3: </h2>
-        <p>dumb component: as a user, I want to see a line-chart representation of my data showing the average grade for "fun" and the average grade for "difficult".
-        </p>
-        <p>Just like the barchart. Same axes as barchart, so feed the same props obj into the linechart. The slicing-and-dicing options will be reflected at the same 
-            <br/> time in barchart and linechart.
-        </p> <br/>
 
-        <h2> 4. slicing and dicing option 1: </h2>
-        <p>smart component: As a user, I want to be able to indicate by means of a checkbox (checkbox will be a dumb component with form-ui-control, connected  to this smart component) whether I only want to show in the bar chart how nice the assignment was,
-            <br/> only want to see how difficult the assignment was, or both.
-        </p>
-        <br/>
-        <h2> 5. slicing and dicing option 2: </h2>
-        <p>smart component: As a user, in addition to filtering on 1 person, I also want to be able to filter on multiple people. I, therefore, want to 
-            <br/> see a checkbox (checkbox will be a dumb component with form-ui-control, connected  to this smart component) in the overview of my students that I can do:
-            <ul>
-                <li>check if I want to include the data of this specific student in my chart</li>
-                <li>uncheck if I want to exclude the data of this specific student from my chart.</li>
-            </ul>
-        </p>
-        <br/>
-        <h2> 6. bonus: sort the bar charts of assignments by average grade (high to low or low to high): </h2>
-        <p> smart component with selectbox with 3 options: 'no sort (default option)', 'sort (low-high)', 'sort (high-low)'. <br/>
-            Definition: 'average grade' can be 1 out of 3 things: 
-            (a) fun + difficult combined per assignment for all 56 students combined (OR a subset of the students).
-            (b) fun per assignment for all 56 students combined (OR a subset of students).
-            (c) difficult per assignment for all 56 students combined (OR a subset of students).
-            
-            This definition requires that the calculation of the average grade takes into account the values of the checkboxes (i.e. checked or not checked) of requirement 1 <br/>
-            (see chapter 'Other requirements' at the  end of this document) about slicing and  dicing options 1 and 2. <br/>
-            I will create a 'props-pipeline' in which these variables (nr of students?, how to sort?, on what to filter: i.e. fun and/or difficult ? ) can interact. 
-        </p>
+
+        {/* VictoryBrushContainer: */}
+        <VictoryChart  
+            theme={wincTheme} 
+            width={800} 
+            height={150} 
+            domainPadding={10}
+            padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
+            scale={{ x: "linear" }}
+            // style={{
+            //     label: { stroke: "tomato" }
+            // }}
+            containerComponent={
+                <VictoryBrushContainer
+                brushDimension="x"
+                brushDomain={zoomDomain}
+                onBrushDomainChange={setZoomDomain} 
+                />
+            }
+        >
+        {/* bar 3of3: */}
+        <VictoryBar 
+            //   style={{
+            //     data: { stroke: "tomato" }
+            //   }}
+            labelComponent={
+                <VictoryTooltip   
+                    style={{fontSize: '10px'}}
+                    flyoutWidth={310}
+                    flyoutHeight={60}
+                    cornerRadius={8}
+                    pointerLength={20}
+                    flyoutStyle={{
+                        // stroke: "tomato",
+                        strokeWidth: 1,
+                        // fill: "yellow",
+                    }}  
+                />
+            }    
+            data={arrayWithAssignmentObjects}
+            x = "assignmentIdShort"
+            y = "difficulty"  
+            /*
+              nice extra: 2do: add checkbox for user to choose between 'fun' and 'difficult' to be shown 
+              in VictoryBrushContainer.
+              Selection of user in VictoryZoomContainer (e.g. 'fun' and/or 'difficult') must be independent of 
+              what user selects in VictoryBrushContainer. 
+              In VictoryBrushContainer: 'difficulty' will be default. With checkbox user can also select 'fun'.
+            */
+        />
+        <VictoryAxis  // 
+            // tickValues={[1.0, 2.0, 3.0, 4.0, 5.0]}
+            tickFormat={arrayWithAssignmentObjects.map(
+                avg => avg.assignmentIdShort
+                )}
+                style={{
+                    axisLabel: {
+                        textAnchor: "middle",
+                        fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
+                        fontSize: 9,
+                        letterSpacing: "normal",
+                        padding: 8,
+                        fill: "#455A64",
+                        stroke: "transparent",
+                        strokeWidth: 0
+                      },
+                    ticks: {
+                        fill: "transparent",
+                        size: 6,
+                        stroke: "#90A4AE",
+                        strokeWidth: 3,
+                        strokeLinecap: "round",
+                        strokeLinejoin: "round"
+                      },
+                    tickLabels: {
+                        fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
+                        fontSize: 7, 
+                        angle: 90, 
+                        letterSpacing: "normal",
+                        padding: 8,
+                        fill: "#455A64",
+                        stroke: "transparent",
+                        strokeWidth: 0
+                    }
+
+                }}
+        />
+        <VictoryAxis dependentAxis 
+            label="Assignment ratings overview"
+            tickValues={['1.0', '2.0', '3.0', '4.0', '5.0']} // must be strings, not numbers.
+            style={{
+            tickLabels: {
+                // fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
+                fontSize: 10,
+                angle: 0,
+                // letterSpacing: "normal",
+                padding: 12,
+                // fill: "#455A64",
+                // stroke: "transparent",
+                // strokeWidth: 0
+                }
+            }}
+        />
+        </VictoryChart>
+      </div>
     </>
   )
 }
