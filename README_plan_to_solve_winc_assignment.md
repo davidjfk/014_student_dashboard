@@ -119,15 +119,13 @@ DESIGN detailed:
                     3. key fun with value. This value is the average degree of perceived fun of 10 students for this assignmentId.
 
                How to do this:  
-               a) Create array with unique assignmentIds (e.g. W2D3-1) (should be 56 assignmentIds in this array in total as string-values). Use fn createArrayWithUniqueValues to create this array.
-               b) Create array with 56 assignment-objects. Each object contains 3 keys: 
+                a) Create array with unique assignmentIds (e.g. W2D3-1) (should be 56 assignmentIds in this array in total as string-values). Use fn createArrayWithUniqueValues to create this array.
+                b) Create array with 56 assignment-objects. Each object contains 3 keys: 
                     - key assignmentId with value (e.g. W2D3-1)
                     - key difficult with value 'empty string' as placeholder (will be filled in next step c ). 
                     - key fun with value 'empty string' as placeholder (will be filled in next step d ). 
                 c)  create average for 'difficult: fn calculateAverageAssignmentDifficultyOfAllStudents
-                    For key difficult, value is average of all 10 students for this assignmentId. Each student has 1 opinion about each assignment, given 
-                    that there are 10 students). For this, filter datastructure 'A' (see point a above) on object-key 'assignmentId' 
-                    (into a new array) AND then apply reduce fn on object-key 'difficult' to create average (1 decimal).
+                    For key difficult, value is average of all 10 students for this assignmentId. Each student has 1 opinion about each assignment, given that there are 10 students). For this, filter datastructure 'A' (see point a above) on object-key 'assignmentId' (into a new array) AND then apply reduce fn on object-key 'difficult' to create average (1 decimal).
 
                 d)  create average for 'fun': fn calculateAssignmentAverageFunLevelOfAllStudents
                     For key fun, same as for key 'difficult', but this time apply reduce fn on object-key 'fun' to create average (also 1 decimal).
@@ -138,7 +136,7 @@ DESIGN detailed:
         2. dumb component 'barchart': as a user, when I open the homepage of the application I want to 
             see an overview in the form of a bar chart of the evaluations (fun & difficult) of all students.
         
-        3. slicing and dicing option 3: (order of 3, 1 then 2 is deliberate)
+        3. slicing and dicing option 3: (order of slicing-and-dicing options 3, 1 then 2 is deliberate)
             dumb component: as a user, I want to see a line-chart representation of my data showing the average grade for "fun" and the average grade for "difficult".
             Just like the barchart. Same axes as barchart, so feed the same props obj into the linechart. The slicing-and-dicing options will be reflected at the same time 
             in barchart and linechart.
@@ -260,11 +258,10 @@ my choice: a scatterplot (dumb component).
 
 ANALYSIS:
 
-    Victory has component for scatterplot. Semantically, scatterplot is not related to the other victory charts, so scatterplot will get 
-    its own  link and route in the navbar.
+    Victory has component for scatterplot. Semantically, scatterplot is not related to the other victory charts, 
+    so scatterplot will get its own  link and route in the navbar.
 
-    as a user, I want to be able to indicate by means of a checkbox  whether I only want to show in the bar chart how nice the assignment was,
-    only want to see how difficult the assignment was, or both.
+    as a user, I want to be able to indicate by means of a checkbox  whether I only want to show in the bar chart how nice the assignment was, only want to see how difficult the assignment was, or both.
 
 
 DESIGN:
@@ -277,10 +274,9 @@ DESIGN:
     for each assignment you can see "on average" how the perceived fun-score and difficult-score correlate. 
 
 
-    STEP1: first 1 and 2, then the rest. So adding the filter-functionality (here: with 2 checkboxes) will be the FINAL step. 
-    STEP2: connect the transformed data to the dumb component scatterplot. 
-    STEP3: 2 checkboxes: 1 for 'fun' and 1 for 'difficult'. Checkbox will be a dumb component with form-ui-control, connected  
-    to this smart component.
+    STEP1: transform the data so it can be fed into the dumb component scatterplot as props-object.
+    STEP2: feed data into the dumb component scatterplot as props-object.
+    STEP3: add the filter-functionality with 2 checkboxes: 1 for 'fun' and 1 for 'difficult'. Checkbox will be a dumb component with form-ui-control, connected to this smart component.
 
 # branch_05_table_view
 (bonus)
