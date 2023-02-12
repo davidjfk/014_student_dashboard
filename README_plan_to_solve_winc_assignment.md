@@ -108,12 +108,9 @@ DESIGN global:
 
 
 DESIGN detailed: 
-        First connect the transformed data to the dumb components in 1,2 and 3 below. This is needed, before you can move on with steps 4,5 and 6.
-
-        1. smart-component-role: transform data from json file, in such a way that it can 
-           be fed into the x-axis and y-axis of a barchart and linechart:
-           for this transform data structure 'A' (i.e. json file  from Redux Toolkit slice, see branch_01_project_set_up  ) into the datastructure that must
-            be displayed as a barchart: the barchart wants as input an array with 56 assignment-objects. Each object contains:
+        1. transform student-data from json file, in such a way that it can 
+           be fed into the x-axis and y-axis of a barchart inside a Victory Brush-and-Zoom container.
+           The barchart wants as input an array with 56 assignment-objects. Each object contains:
                     1. key with assignmentId, 
                     2. key difficult with value. This value is the average difficulty of 10 students for this assignmentId.
                     3. key fun with value. This value is the average degree of perceived fun of 10 students for this assignmentId.
@@ -131,47 +128,11 @@ DESIGN detailed:
                     For key fun, same as for key 'difficult', but this time apply reduce fn on object-key 'fun' to create average (also 1 decimal).
 
                     Remark: round to 1 decimal  place (is what the requirement says, although  data only allows for rounding to 0 decimal place).
-                e) connect data to simple barchart as a proof of concept.
+        2. create Victory Brush-and-Zoom container.
+        3. feed the transformed student-data into the (barcharts inside) brush and zoom container. 
+
+        (the remaining features will be implemented in 'branch_05_dashboard_overview_with_slice_and_dice_and_bonus_requirements' )
     
-        2. dumb component 'barchart': as a user, when I open the homepage of the application I want to 
-            see an overview in the form of a bar chart of the evaluations (fun & difficult) of all students.
-        
-        3. slicing and dicing option 3: (order of slicing-and-dicing options 3, 1 then 2 is deliberate)
-            dumb component: as a user, I want to see a line-chart representation of my data showing the average grade for "fun" and the average grade for "difficult".
-            Just like the barchart. Same axes as barchart, so feed the same props obj into the linechart. The slicing-and-dicing options will be reflected at the same time 
-            in barchart and linechart.
-                use/modify the linechart-styling of 'wincTheme' from winc-example-code.
-
-        4. slicing and dicing option 1: 
-            smart component: As a user, I want to be able to indicate by means of a checkbox (checkbox will be a dumb component with form-ui-control, connected  to this smart component) 
-            whether I only want to show in the bar chart how nice the assignment was,
-            only want to see how difficult the assignment was, or both.
-
-        5. slicing and dicing option 2:
-            smart component: As a user, in addition to filtering on 1 person, I also want to be able to filter on multiple people. I, therefore, want to 
-            see a checkbox (checkbox will be a dumb component with form-ui-control, connected  to this smart component) in the overview of my students that I can do:
-            check if I want to include the data of this specific student in my chart.
-            uncheck if I want to exclude the data of this specific student from my chart.
-
-            (would be prettier to use drop-down box, but requirements states 'checkboxes'.)
-
-        6. bonus: sort the bar charts of assignments by average grade (high to low or low to high): 
-            smart component with selectbox with 3 options: 'no sort (default option)', 'sort (low-high)', 'sort (high-low)'. 
-            Definition: 'average grade' can be 1 out of 3 things: 
-            (a) fun + difficult combined per assignment for all 56 students combined (OR a subset of the students).
-            (b) fun per assignment for all 56 students combined (OR a subset of students).
-            (c) difficult per assignment for all 56 students combined (OR a subset of students).
-            
-            This definition requires that the calculation of the average grade takes into account the values of the checkboxes (i.e. checked or not checked) of requirement 1 
-            (see chapter 'Other requirements' at the  end of this document) about slicing and  dicing options 1 and 2. 
-            I will create a 'props-pipeline' in which these variables (nr of students?, how to sort?, on what to filter: i.e. fun and/or difficult ? ) can interact. 
-
-            tasks:
-            1. victory has in-built prop to sort. See victory-site --> Documentation --> Common Props --> 'sortKey' combined with 'sortOrder'.
-        
-    
-
-
 
 # branch 03_student_pages
 ANALYSIS:
@@ -205,49 +166,9 @@ DESIGN:
             grade of all students'. But no need to do this, because requirement: <br/>
             Tip: the chart remains the same on the X and Y axes, only gets "less" data, namely the data of 1 student.
 
-        3. slicing and dicing option 3:
-           dumb component: as a user, I want to see a line-chart representation of my data showing the average grade for "fun" and the average grade for "difficult".
+        3.  connect data to barchart in brush and zoom container. 
 
-           Just like the barchart. Same axes as barchart, so feed the same props obj into the linechart. The slicing-and-dicing options will be reflected at the same 
-           time in barchart and linechart.
-
-        4. slicing and dicing option 1: 
-           smart component: as a user, I want to be able to indicate by means of a checkbox (checkbox will be a dumb component with form-ui-control, connected  to this smart component) whether 
-           I only want to show in the bar chart how nice the assignment was,
-           only want to see how difficult the assignment was, or both.
-
-
-        5. bonus: Sort the bar charts of assignments by average grade (high to low or low to high):
-            smart component with selectbox with 3 options: 'no sort (default option)', 'sort (low-high)', 'sort (high-low)'. 
-            Definition: 'average grade' can be 1 out of 3 things: 
-            (a) fun + difficult combined per assignment for 1 selected student.
-            (b) fun per assignment for 1 selected student.
-            (c) difficult per assignment for 1 selected student. 
-            
-            This definition requires that the calculation of the average grade takes into account the values of the checkboxes (i.e. checked or not checked) of requirement 1 <br/>
-            (see chapter 'Other requirements' at the  end of this document) about slicing and  dicing option 1 (remark: option 2 is only relevant on the dashboard_overview !). <br/>
-            I will create a 'props-pipeline' in which these variables (how to sort?, on what to filter: i.e. fun and/or difficult ? ) can interact. <br/>
-            Remark: 'nr of students? can vary in the dashboard_overview, but on the StudentPages only 1 student can be selected at a time !
-
-
-        6. bonus: user profiles: 
-            Save  the data locally in a json file.
-            There will be 2 json-files:
-                1 with data about 'fun' and 'difficulty' for each assignment of each student.
-                1 with personal data about each student. 
-                Unique identifier in both json-files is name (works in this dataset, generally speaking 'name' is not unique), so 
-                the data from both json-files can be combined for 1 student.
-
-                idea: implement personal data with nested routing via a button (but first get it to work without)
- 
-            dumb component: by using Mockaroo you can retrieve objects with fake data in them. You can then add a profile for each student page and further enrich 
-            the fictitious students with:
-                Last name
-                Age</li>
-                Phone number
-                email address
-                phote from url
-
+            (the remaining features will be implemented in 'branch_06_student_pages_with_slice_and_dice_and_bonus_requirements' )
 
 
 # branch 04_scatterplot_design_your_own_tool
@@ -278,7 +199,93 @@ DESIGN:
     STEP2: feed data into the dumb component scatterplot as props-object.
     STEP3: add the filter-functionality with 2 checkboxes: 1 for 'fun' and 1 for 'difficult'. Checkbox will be a dumb component with form-ui-control, connected to this smart component.
 
-# branch_05_table_view
+
+# branch_05_dashboard_overview_with_slice_and_dice_and_bonus_requirements
+        (continuation of the code from branch_02_dashboard_overview)
+        4. dumb component 'barchart': as a user, when I open the homepage of the application I want to 
+            see an overview in the form of a bar chart of the evaluations (fun & difficult) of all students.
+        
+        5. slicing and dicing option 3: (order of slicing-and-dicing options 3, 1 then 2 is deliberate)
+            dumb component: as a user, I want to see a line-chart representation of my data showing the average grade for "fun" and the average grade for "difficult".
+            Just like the barchart. Same axes as barchart, so feed the same props obj into the linechart. The slicing-and-dicing options will be reflected at the same time 
+            in barchart and linechart.
+                use/modify the linechart-styling of 'wincTheme' from winc-example-code.
+
+        6. slicing and dicing option 1: 
+            smart component: As a user, I want to be able to indicate by means of a checkbox (checkbox will be a dumb component with form-ui-control, connected  to this smart component) 
+            whether I only want to show in the bar chart how nice the assignment was,
+            only want to see how difficult the assignment was, or both.
+
+        7. slicing and dicing option 2:
+            smart component: As a user, in addition to filtering on 1 person, I also want to be able to filter on multiple people. I, therefore, want to 
+            see a checkbox (checkbox will be a dumb component with form-ui-control, connected  to this smart component) in the overview of my students that I can do:
+            check if I want to include the data of this specific student in my chart.
+            uncheck if I want to exclude the data of this specific student from my chart.
+
+            (would be prettier to use drop-down box, but requirements states 'checkboxes'.)
+
+        8. bonus: sort the bar charts of assignments by average grade (high to low or low to high): 
+            smart component with selectbox with 3 options: 'no sort (default option)', 'sort (low-high)', 'sort (high-low)'. 
+            Definition: 'average grade' can be 1 out of 3 things: 
+            (a) fun + difficult combined per assignment for all 56 students combined (OR a subset of the students).
+            (b) fun per assignment for all 56 students combined (OR a subset of students).
+            (c) difficult per assignment for all 56 students combined (OR a subset of students).
+            
+            This definition requires that the calculation of the average grade takes into account the values of the checkboxes (i.e. checked or not checked) of requirement 1 
+            (see chapter 'Other requirements' at the  end of this document) about slicing and  dicing options 1 and 2. 
+            I will create a 'props-pipeline' in which these variables (nr of students?, how to sort?, on what to filter: i.e. fun and/or difficult ? ) can interact. 
+
+            tasks:
+            1. victory has in-built prop to sort. See victory-site --> Documentation --> Common Props --> 'sortKey' combined with 'sortOrder'.
+
+
+# branch_06_student_pages_with_slice_and_dice_and_bonus_requirements
+        (continuation of the code from branch_03_student_pages)
+
+        4. slicing and dicing option 3:
+           dumb component: as a user, I want to see a line-chart representation of my data showing the average grade for "fun" and the average grade for "difficult".
+
+           Just like the barchart. Same axes as barchart, so feed the same props obj into the linechart. The slicing-and-dicing options will be reflected at the same 
+           time in barchart and linechart.
+
+        5. slicing and dicing option 1: 
+           smart component: as a user, I want to be able to indicate by means of a checkbox (checkbox will be a dumb component with form-ui-control, connected  to this smart component) whether 
+           I only want to show in the bar chart how nice the assignment was,
+           only want to see how difficult the assignment was, or both.
+
+
+        6. bonus: Sort the bar charts of assignments by average grade (high to low or low to high):
+            smart component with selectbox with 3 options: 'no sort (default option)', 'sort (low-high)', 'sort (high-low)'. 
+            Definition: 'average grade' can be 1 out of 3 things: 
+            (a) fun + difficult combined per assignment for 1 selected student.
+            (b) fun per assignment for 1 selected student.
+            (c) difficult per assignment for 1 selected student. 
+            
+            This definition requires that the calculation of the average grade takes into account the values of the checkboxes (i.e. checked or not checked) of requirement 1 <br/>
+            (see chapter 'Other requirements' at the  end of this document) about slicing and  dicing option 1 (remark: option 2 is only relevant on the dashboard_overview !). <br/>
+            I will create a 'props-pipeline' in which these variables (how to sort?, on what to filter: i.e. fun and/or difficult ? ) can interact. <br/>
+            Remark: 'nr of students? can vary in the dashboard_overview, but on the StudentPages only 1 student can be selected at a time !
+
+
+        7. bonus: user profiles: 
+            Save  the data locally in a json file.
+            There will be 2 json-files:
+                1 with data about 'fun' and 'difficulty' for each assignment of each student.
+                1 with personal data about each student. 
+                Unique identifier in both json-files is name (works in this dataset, generally speaking 'name' is not unique), so 
+                the data from both json-files can be combined for 1 student.
+
+                idea: implement personal data with nested routing via a button (but first get it to work without)
+ 
+            dumb component: by using Mockaroo you can retrieve objects with fake data in them. You can then add a profile for each student page and further enrich 
+            the fictitious students with:
+                Last name
+                Age</li>
+                Phone number
+                email address
+                phote from url
+
+# branch_07_table_view
 (bonus)
 
 ANALYSIS:
@@ -332,7 +339,7 @@ DESIGN:
 
 
 
-# branch_06_sort_students_by_average_grades
+# branch_08_sort_students_by_average_grades
 
 ANALYSIS:
     requirement: "sort the students by average grades (high to low or low to high)."
@@ -384,8 +391,8 @@ DESIGN:
 
 
 
-# Other Requirements
-    All 'other requirements' have been incorporated in branches above. 
+# slicing-and-dicing and bonus Requirements
+    All 'slicing-and-dicing and bonus Requirements' have been incorporated in branches above. 
 
 1. slicing and dicing --> has been incorporated in branches above. Info below applies to all branches where <br.>
    slicing and dicing is applicable.
