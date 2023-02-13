@@ -312,10 +312,11 @@ export const wincTheme = {
     //   height: 350,
     //   padding: 50
     // },
-    // scatter: {
+    
+    // scatter: {  //2do: put the shared styling of the 2 scatterplots in this obj scatter.
     //   style: {
     //     data: {
-    //       fill: "#455A64",
+    //       fill: "#c43a31", 
     //       opacity: 1,
     //       stroke: "transparent",
     //       strokeWidth: 0
@@ -330,10 +331,12 @@ export const wincTheme = {
     //       strokeWidth: 0
     //     }
     //   },
-    //   width: 350,
+    //   size: 10, 
+    //   width: 550,
     //   height: 350,
     //   padding: 50
     // },
+
     // stack: {
     //   colorScale: [
     //     "#F4511E",

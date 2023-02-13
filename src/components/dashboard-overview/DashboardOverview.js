@@ -25,7 +25,7 @@ import {
     createAssignmentObjectForEachAssignmentId,
     log } from '../../utils';
 
-import {wincTheme} from "../../styles/wincTheme";
+import {wincTheme} from "../styles/wincTheme";
 
 const DashboardOverview = () => {
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);

@@ -21,7 +21,7 @@ import { createArrayWithUniqueValues, log } from '../../utils';
 
 import { makeAssignmentIdShort } from '../../utils';
 
-import {wincTheme} from "../../styles/wincTheme";
+import {wincTheme} from "../styles/wincTheme";
 
 const Student = (props) => {
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);
