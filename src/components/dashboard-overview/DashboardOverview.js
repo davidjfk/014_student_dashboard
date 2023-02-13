@@ -128,6 +128,7 @@ const DashboardOverview = () => {
                 {/* bar 1of3: */}
                 <VictoryBar 
                     // style={{ data: { fill: "purple" } }} // chart responds to change
+                    height={100}
                     style = {{
                         data: {
                             fill: "#D4E7FA", // do not put this prop in Theme. Light-blue from wincacademy.nl

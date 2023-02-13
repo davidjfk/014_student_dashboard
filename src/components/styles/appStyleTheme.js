@@ -1,7 +1,7 @@
 export const theme = {
     colors: {
       button01: "aquamarine", 
-      background01: "lightslategray", 
+      background01: "F2F2F2", 
       background02: "lightyellow", 
       background03: "aquamarine", 
       background04: "orange", 
@@ -9,11 +9,11 @@ export const theme = {
       background06: "red", 
       fontColor01: "black",
       fontColor02: "white", 
-      fontColor03: "darkSalmon",
+      fontColor03: "#29303E",
       header01: "deepskyblue",
       onHoverBackground01: "lightslategray",
       onHoverBackground02: "aquamarine",
-      onHoverFontColor01: "white"
+      onHoverFontColor01: "black"
     },
     pointerEvents: "auto",
     fontSize: {

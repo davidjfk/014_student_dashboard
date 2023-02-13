@@ -68,6 +68,10 @@ const Scatterplot = () => {
   return (
     <>
         <h2> bonus: scatterplot </h2>
+
+
+    
+
     </>
   )
 }

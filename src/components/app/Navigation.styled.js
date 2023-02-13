@@ -2,14 +2,17 @@ import styled from "styled-components";
 
 export const NavigationStyled = styled.nav`
   .navBar {
-    margin-bottom: 4rem;
-    font-size: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 0rem;
+    font-size: 1.8rem;
+    font-family: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif";
   }
   
   .navBar li {
-    display: inline-block;
     list-style: none;
-    margin-right: 4rem;
+    margin-right: 2rem;
   }
   
   .navBar a {
@@ -17,7 +20,7 @@ export const NavigationStyled = styled.nav`
   }
   
   .navBar a:hover {
-    color: ${({ theme}) => theme.colors.onHoverFontColor01 };;
+    color: ${({ theme}) => theme.colors.onHoverFontColor01 };
   }
   
   a,
