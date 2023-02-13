@@ -81,9 +81,9 @@
         assignmentIdShort: makeAssignmentIdShort(assignmentId, 6), // works
         difficulty: calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId),
         fun: calculateAverageForFunForOneAssignmentOfAllStudents(studentMockData, assignmentId),
-        label: `Opdracht ${ assignmentId
-        }, difficultyRating: ${calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId).toFixed(1)}, 
-        enjoymentRating: ${calculateAverageForFunForOneAssignmentOfAllStudents(studentMockData, assignmentId).toFixed(1)}`
+        label: `Opdracht: ${ assignmentId
+        }, avg difficultyRating: ${calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId).toFixed(1)}, 
+        avg enjoymentRating: ${calculateAverageForFunForOneAssignmentOfAllStudents(studentMockData, assignmentId).toFixed(1)}`
     });
 
     //1of3: 
@@ -149,9 +149,9 @@
         // assignmentIdShort: makeAssignmentIdShort(studentName, 6), // works
         difficulty: calculateAverageForDifficultyForAllAssignmentsOf1Student(studentMockData, studentName),
         fun: calculateAverageForFunForAllAssignmentsOf1Student(studentMockData, studentName),
-        label: `Student name ${ studentName
-        }, difficultyRating: ${calculateAverageForDifficultyForAllAssignmentsOf1Student(studentMockData, studentName).toFixed(1)}, 
-        enjoymentRating: ${calculateAverageForFunForAllAssignmentsOf1Student(studentMockData, studentName).toFixed(1)}`
+        label: `Student name: ${ studentName
+        }, avg difficultyRating: ${calculateAverageForDifficultyForAllAssignmentsOf1Student(studentMockData, studentName).toFixed(1)}, 
+        avg enjoymentRating: ${calculateAverageForFunForAllAssignmentsOf1Student(studentMockData, studentName).toFixed(1)}`
     });
 
     //1of3: 

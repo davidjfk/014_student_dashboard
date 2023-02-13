@@ -312,7 +312,7 @@ export const wincTheme = {
     //   height: 350,
     //   padding: 50
     // },
-    
+
     // scatter: {  //2do: put the shared styling of the 2 scatterplots in this obj scatter.
     //   style: {
     //     data: {

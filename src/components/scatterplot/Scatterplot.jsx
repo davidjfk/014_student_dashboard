@@ -121,14 +121,14 @@ const Scatterplot = () => {
 <VictoryChart 
             theme={wincTheme} 
             width={300} 
-            height={200}    
+            height={230}    
             //domainPadding has no effect.
             //padding has undesirable effect.
         //   style={{ data: { fill: "red" } }}
         //   domain={{ y: [-10, 10] }}
 
         >
-            <VictoryGroup offset={10} 
+            <VictoryGroup offset={0} 
                     // tickValues={['1.0', '2.0', '3.0', '4.0', '5.0']}
                     style = {{
                         // group: {
@@ -147,19 +147,21 @@ const Scatterplot = () => {
                         },
                         labels: {
                             fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
-                            fontSize: 8,
-                            letterSpacing: "normal",
-                            padding: 18,
-                            // fill: "#455A64",
-                            stroke: "transparent",
-                            strokeWidth: 0
+                            // fontSize: 8,
+                            // letterSpacing: "normal",
+                            // padding: 8,
+                            // // fill: "#455A64",
+                            // stroke: "transparent",
+                            // strokeWidth: 0
                         }
                     }}            
             >
-                {/* bar 1of3: */}
+                {/* bar 1of2: */}
                 <VictoryScatter 
                     // style={{ data: { fill: "purple" } }} // chart responds to change
-                    height={100}
+                    // height={100}
+                    size={3}
+                    symbol= "triangleUp"
                     style = {{
                         data: {
                             fill: "#D4E7FA", // do not put this prop in Theme. Light-blue from wincacademy.nl
@@ -170,8 +172,8 @@ const Scatterplot = () => {
                     labelComponent={
                         <VictoryTooltip   
                             style={{fontSize: '5px'}}
-                            flyoutWidth={310}
-                            flyoutHeight={60}
+                            flyoutWidth={160}
+                            flyoutHeight={30}
                             cornerRadius={8}
                             pointerLength={20}
                             flyoutStyle={{
@@ -190,14 +192,16 @@ const Scatterplot = () => {
                         avg => avg.difficulty
                         )}
                 />
-                {/* bar 2of3: */}
+                {/* bar 2of2: */}
                 <VictoryScatter 
+                    size={2}
                     style = {{
                         data: {
                             fill: "#FCD808", // do not put this prop in Theme. Yellow from wincacademy.nl.
                             padding: 0,
                             strokeWidth: 5 // bar width
-                        },
+                            
+                        }
                         // labels: {
                         //     fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
                         //     fontSize: 8,
@@ -212,8 +216,8 @@ const Scatterplot = () => {
                     labelComponent={
                         <VictoryTooltip 
                             style={{fontSize: '5px'}}
-                            flyoutWidth={310}
-                            flyoutHeight={60}
+                            flyoutWidth={110}
+                            flyoutHeight={30}
                             cornerRadius={8}
                             pointerLength={20}
                             flyoutStyle={{
@@ -233,6 +237,7 @@ const Scatterplot = () => {
                 />   
             </VictoryGroup>
             <VictoryAxis 
+                domain={[1.5, 3.5]}
                 // tickValues specifies both the number of ticks and where
                 // they are placed on the axis
                 // tickValues={[1.0, 2.0, 3, 4, 5]}
@@ -242,35 +247,82 @@ const Scatterplot = () => {
                  'W3D5 - Project - Todo-List' , instead of the expected result (to save space on x-axis) 'W3D5'.
                 */ 
                 
-                label="difficulty rating"
+                // label="average difficulty rating"
+                standalone={false}
+                label={() => ""}
+                axisLabelComponent={<VictoryLabel dx={0} dy={0} text="average difficulty rating" />}
                 style={{
-                    tickLabels: {
+                    axisLabel: {
                         // fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
-                        fontSize: 10,
+                        fontSize: 5,
+                        
                         angle: 0,
                         // letterSpacing: "normal",
-                        padding: 12,
+                        padding: 14,
                         // fill: "#455A64",
                         // stroke: "transparent",
                         // strokeWidth: 0
-                      }
+                    },
+                    tickLabels: {
+                        // fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
+                        fontSize: 4,
+                        angle: 0,
+                        // letterSpacing: "normal",
+                        padding: 1,
+                        // fill: "#455A64",
+                        // stroke: "transparent",
+                        // strokeWidth: 0
+                    },
+                    ticks: {
+                        fill: "transparent",
+                        size: 5,
+                        stroke: "#90A4AE",
+                        strokeWidth: 3,
+                        strokeLinecap: "round",
+                        strokeLinejoin: "round"
+                    }
                 }}
             />
             <VictoryAxis dependentAxis 
-                label="fun rating"
+                domain={[1.5, 4.5]}
+                // label="average fun rating"
+                standalone={false}
+                label={() => ""}
+                axisLabelComponent={<VictoryLabel dx={0} dy={4} text="average fun rating" />}
                 // tickValues={[1, 2, 3, 4, 5]}
                 // tickFormat={arrayWithAssignmentObjects.map(avg => (avg.difficulty + avg.fun)/2)} 
                 style={{
-                    tickLabels: {
+                    axisLabel: {
                         // fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
-                        fontSize: 10,
-                        angle: 0,
+                        fontSize: 5,
+                        
+                        angle: -90,
                         // letterSpacing: "normal",
-                        padding: 12,
+                        padding: 20,
                         // fill: "#455A64",
                         // stroke: "transparent",
                         // strokeWidth: 0
-                      }
+                    },
+                    tickLabels: {
+                        // fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
+                        fontSize: 4,
+                        
+                        angle: 0,
+                        // letterSpacing: "normal",
+                        padding: 1,
+                        // fill: "#455A64",
+                        // stroke: "transparent",
+                        // strokeWidth: 0
+                    },                                   
+
+                    ticks: {
+                        fill: "transparent",
+                        size: 5,
+                        stroke: "#90A4AE",
+                        strokeWidth: 3,
+                        strokeLinecap: "round",
+                        strokeLinejoin: "round"
+                    }                    
                 }}
             />
           </VictoryChart>
