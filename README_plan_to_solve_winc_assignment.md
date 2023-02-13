@@ -130,6 +130,8 @@ DESIGN detailed:
                     Remark: round to 1 decimal  place (is what the requirement says, although  data only allows for rounding to 0 decimal place).
         2. create Victory Brush-and-Zoom container.
         3. feed the transformed student-data into the (barcharts inside) brush and zoom container. 
+        4. dumb component 'barchart': as a user, when I open the homepage of the application I want to 
+            see an overview in the form of a bar chart of the evaluations (fun & difficult) of all students.
 
         (the remaining features will be implemented in 'branch_05_dashboard_overview_with_slice_and_dice_and_bonus_requirements' )
     
@@ -201,8 +203,6 @@ DESIGN:
 
 # branch_05_dashboard_overview_with_slice_and_dice_and_bonus_requirements
         (continuation of the code from branch_02_dashboard_overview)
-        4. dumb component 'barchart': as a user, when I open the homepage of the application I want to 
-            see an overview in the form of a bar chart of the evaluations (fun & difficult) of all students.
         
         5. slicing and dicing option 3: (order of slicing-and-dicing options 3, 1 then 2 is deliberate)
             dumb component: as a user, I want to see a line-chart representation of my data showing the average grade for "fun" and the average grade for "difficult".
@@ -395,6 +395,17 @@ DESIGN:
         sorting and filtering.  
 
 
+# branch 09_scatterplot_with_correlation_coefficients_and_outliers
+
+    End point of 'branch_02_scatterplot(...)' : inside the scatterplot the assignments and the students have been 'scatterplotted' on the dimensions 'difficult rating' and 'fun rating'.
+
+    1. for 'assignments' calculate correlation coefficient.
+    2. automatically analyse the value of the coefficient.
+    3. for 'students' calculate correlation coefficient.
+    4. automatically analyse the value of the coefficient.
+    5. calculate outliers.
+    6. if there are outliers (in branch_02_scatterplot(...) visual inspection of scatterplot has resulted in 1 student as an outlier
+       and possibly 1 or 2 assignments.)
 
 
 
