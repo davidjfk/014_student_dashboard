@@ -130,6 +130,8 @@ DESIGN detailed:
                     Remark: round to 1 decimal  place (is what the requirement says, although  data only allows for rounding to 0 decimal place).
         2. create Victory Brush-and-Zoom container.
         3. feed the transformed student-data into the (barcharts inside) brush and zoom container. 
+        4. dumb component 'barchart': as a user, when I open the homepage of the application I want to 
+            see an overview in the form of a bar chart of the evaluations (fun & difficult) of all students.
 
         (the remaining features will be implemented in 'branch_05_dashboard_overview_with_slice_and_dice_and_bonus_requirements' )
     
@@ -182,29 +184,25 @@ ANALYSIS:
 
     Victory has component for scatterplot. Semantically, scatterplot is not related to the other victory charts, 
     so scatterplot will get its own  link and route in the navbar.
-
-    as a user, I want to be able to indicate by means of a checkbox  whether I only want to show in the bar chart how nice the assignment was, only want to see how difficult the assignment was, or both.
-
+       
 
 DESIGN:
     scatterplot 1:
-    All students (10) on X-axis with their individual average fun-socre andon Y-axis with their individual average difficult-score: so 
-    for each student you can see how the average fun correlates with average diffiicult.
-
-    scatterplot 2:
     All assignments (56) on X-axis with average fun-score of 10 students, and on Y-axis assignments (56) with average difficult score of 10 students: so 
     for each assignment you can see "on average" how the perceived fun-score and difficult-score correlate. 
+
+    scatterplot 2:
+    All students (10) on X-axis with their individual average fun-socre andon Y-axis with their individual average difficult-score: so 
+    for each student you can see how the average fun correlates with average diffiicult.
 
 
     STEP1: transform the data so it can be fed into the dumb component scatterplot as props-object.
     STEP2: feed data into the dumb component scatterplot as props-object.
-    STEP3: add the filter-functionality with 2 checkboxes: 1 for 'fun' and 1 for 'difficult'. Checkbox will be a dumb component with form-ui-control, connected to this smart component.
-
+    STEP3: calculate correlation coefficient for both scatterplots and analyse/ interpret the result. 
+    STEP4: style the 2 scatterplots. 
 
 # branch_05_dashboard_overview_with_slice_and_dice_and_bonus_requirements
         (continuation of the code from branch_02_dashboard_overview)
-        4. dumb component 'barchart': as a user, when I open the homepage of the application I want to 
-            see an overview in the form of a bar chart of the evaluations (fun & difficult) of all students.
         
         5. slicing and dicing option 3: (order of slicing-and-dicing options 3, 1 then 2 is deliberate)
             dumb component: as a user, I want to see a line-chart representation of my data showing the average grade for "fun" and the average grade for "difficult".
@@ -261,11 +259,19 @@ DESIGN:
             (a) fun + difficult combined per assignment for 1 selected student.
             (b) fun per assignment for 1 selected student.
             (c) difficult per assignment for 1 selected student. 
+
+            1. smart component:transform data and feed it into the dumb components as props-object.
+            2. dumb component: 10 students will populate the x-axis, instead of 56 assignments. 
+                The y-axis -as a result of this - will contain 'average grade per student', instead of 'average grade per assignment'. 
+                So I need a new - read: modified - victory chart 'M' to implement this. 
+                Semantically, 'M' is different from the other victory charts, so 'M' gets its own link and route in the navbar.  
+                implement 'M' as barchart and linechart.
             
-            This definition requires that the calculation of the average grade takes into account the values of the checkboxes (i.e. checked or not checked) of requirement 1 <br/>
-            (see chapter 'Other requirements' at the  end of this document) about slicing and  dicing option 1 (remark: option 2 is only relevant on the dashboard_overview !). <br/>
-            I will create a 'props-pipeline' in which these variables (how to sort?, on what to filter: i.e. fun and/or difficult ? ) can interact. <br/>
-            Remark: 'nr of students? can vary in the dashboard_overview, but on the StudentPages only 1 student can be selected at a time !
+                This definition requires that the calculation of the average grade takes into account the values of the checkboxes (i.e. checked or not checked or display of 'difficult' and/or 'fun).
+            3.  scope: page Student Dashboard.
+            4.  how2 implement: create a 'props-pipeline' in which these variables (how to sort?, on what to filter: i.e. fun and/or difficult ? ) 
+                can interact. 
+                Remark: 'nr of students? can vary in the dashboard_overview, but on the StudentPages only 1 student can be selected at a time !
 
 
         7. bonus: user profiles: 
@@ -389,6 +395,17 @@ DESIGN:
         sorting and filtering.  
 
 
+# branch 09_scatterplot_with_correlation_coefficients_and_outliers
+
+    End point of 'branch_02_scatterplot(...)' : inside the scatterplot the assignments and the students have been 'scatterplotted' on the dimensions 'difficult rating' and 'fun rating'.
+
+    1. for 'assignments' calculate correlation coefficient.
+    2. automatically analyse the value of the coefficient.
+    3. for 'students' calculate correlation coefficient.
+    4. automatically analyse the value of the coefficient.
+    5. calculate outliers.
+    6. if there are outliers (in branch_02_scatterplot(...) visual inspection of scatterplot has resulted in 1 student as an outlier
+       and possibly 1 or 2 assignments.)
 
 
 

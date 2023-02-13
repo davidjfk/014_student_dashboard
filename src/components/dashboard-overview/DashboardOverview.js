@@ -20,12 +20,12 @@ import {BrushAndZoomWithBarChart} from '../brushAndZoomWithBarChart/BrushAndZoom
 import {
     calculateAverageForDifficultyForOneAssignmentOfAllStudents,
     calculateAverageForFunForOneAssignmentOfAllStudents,
-    createArrayWithObjects,
+    createArrayWithAssignmentObjects,
     createArrayWithUniqueValues, 
     createAssignmentObjectForEachAssignmentId,
     log } from '../../utils';
 
-import {wincTheme} from "../../styles/wincTheme";
+import {wincTheme} from "../styles/wincTheme";
 
 const DashboardOverview = () => {
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);
@@ -47,7 +47,7 @@ const DashboardOverview = () => {
             - key difficult with value 'empty array'. 
             - key fun with value 'empty array'. 
     */
-    const arrayWithAssignmentObjects = createArrayWithObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
+    const arrayWithAssignmentObjects = createArrayWithAssignmentObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
     log(`arrayWithAssignmentObjects: `)
     log(arrayWithAssignmentObjects);  
     /*
@@ -128,6 +128,7 @@ const DashboardOverview = () => {
                 {/* bar 1of3: */}
                 <VictoryBar 
                     // style={{ data: { fill: "purple" } }} // chart responds to change
+                    height={100}
                     style = {{
                         data: {
                             fill: "#D4E7FA", // do not put this prop in Theme. Light-blue from wincacademy.nl

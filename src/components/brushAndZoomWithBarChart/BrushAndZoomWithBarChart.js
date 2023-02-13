@@ -12,7 +12,7 @@ import {
     VictoryAxis 
 } from "victory";
 
-import {wincTheme} from "../../styles/wincTheme";
+import {wincTheme} from "../styles/wincTheme";
 
 const BrushAndZoomWithBarChart = (arrayWithAssignmentObjects) => {
     const [zoomDomain, setZoomDomain] = useState({x: [0, 10], y: [0, 5]}); // nr of assignments to display when you open the page.
