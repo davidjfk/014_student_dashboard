@@ -201,21 +201,30 @@ DESIGN:
     STEP3: calculate correlation coefficient for both scatterplots and analyse/ interpret the result. 
     STEP4: style the 2 scatterplots. 
 
-# branch_05_dashboard_overview_with_slice_and_dice_and_bonus_requirements
-        (continuation of the code from branch_02_dashboard_overview)
+# branch_05_line_chart_as_slicing_and_dicing_option_3
         
-        5. slicing and dicing option 3: (order of slicing-and-dicing options 3, 1 then 2 is deliberate)
+        1.  slicing and dicing option 3: (order of slicing-and-dicing options 3, 1 then 2 is deliberate)
             dumb component: as a user, I want to see a line-chart representation of my data showing the average grade for "fun" and the average grade for "difficult".
             Just like the barchart. Same axes as barchart, so feed the same props obj into the linechart. The slicing-and-dicing options will be reflected at the same time 
             in barchart and linechart.
                 use/modify the linechart-styling of 'wincTheme' from winc-example-code.
 
-        6. slicing and dicing option 1: 
+            I have combined linechart with scatterplot. The nice idea (with rather sparse implementation of how) to do this comes from: 
+            https://omarshishani.medium.com/add-points-to-victoryline-chart-by-combining-with-scatter-plot-c56d663fbd35
+
+
+            The linechart has its own route, 
+
+
+# branch_6a_dashboard_overview_with_slicing_and_dicing_options_1_and_2_and_bonus_requirements
+        (continuation of the code from branch_02_dashboard_overview)
+
+        5. slicing and dicing option 1: 
             smart component: As a user, I want to be able to indicate by means of a checkbox (checkbox will be a dumb component with form-ui-control, connected  to this smart component) 
             whether I only want to show in the bar chart how nice the assignment was,
             only want to see how difficult the assignment was, or both.
 
-        7. slicing and dicing option 2:
+        6. slicing and dicing option 2:
             smart component: As a user, in addition to filtering on 1 person, I also want to be able to filter on multiple people. I, therefore, want to 
             see a checkbox (checkbox will be a dumb component with form-ui-control, connected  to this smart component) in the overview of my students that I can do:
             check if I want to include the data of this specific student in my chart.
@@ -223,7 +232,7 @@ DESIGN:
 
             (would be prettier to use drop-down box, but requirements states 'checkboxes'.)
 
-        8. bonus: sort the bar charts of assignments by average grade (high to low or low to high): 
+        7. bonus: sort the bar charts of assignments by average grade (high to low or low to high): 
             smart component with selectbox with 3 options: 'no sort (default option)', 'sort (low-high)', 'sort (high-low)'. 
             Definition: 'average grade' can be 1 out of 3 things: 
             (a) fun + difficult combined per assignment for all 56 students combined (OR a subset of the students).
@@ -238,16 +247,10 @@ DESIGN:
             1. victory has in-built prop to sort. See victory-site --> Documentation --> Common Props --> 'sortKey' combined with 'sortOrder'.
 
 
-# branch_06_student_pages_with_slice_and_dice_and_bonus_requirements
+# branch_6b_student_pages_with_slicing_and_dicing_options_1_and_2_and_bonus_requirements
         (continuation of the code from branch_03_student_pages)
 
-        4. slicing and dicing option 3:
-           dumb component: as a user, I want to see a line-chart representation of my data showing the average grade for "fun" and the average grade for "difficult".
-
-           Just like the barchart. Same axes as barchart, so feed the same props obj into the linechart. The slicing-and-dicing options will be reflected at the same 
-           time in barchart and linechart.
-
-        5. slicing and dicing option 1: 
+        4. slicing and dicing option 1: 
            smart component: as a user, I want to be able to indicate by means of a checkbox (checkbox will be a dumb component with form-ui-control, connected  to this smart component) whether 
            I only want to show in the bar chart how nice the assignment was,
            only want to see how difficult the assignment was, or both.
@@ -406,6 +409,9 @@ DESIGN:
     5. calculate outliers.
     6. if there are outliers (in branch_02_scatterplot(...) visual inspection of scatterplot has resulted in 1 student as an outlier
        and possibly 1 or 2 assignments.)
+
+
+
 
 
 
