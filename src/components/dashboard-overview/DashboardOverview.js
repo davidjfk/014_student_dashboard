@@ -1,6 +1,16 @@
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, useEffect, useRef  } from 'react';
 import { useSelector } from "react-redux";
+
+// start of imports for filter-and-sort-comp:
+import { Checkbox } from '../checkbox/Checkbox';
+import {Container} from '../styles/Container.styled'
+// import ClientInClientList from './ClientInClientList.js'
+import {ClientListAreaStyled, ClientListStyled, Column, FormControlArea, Headers, Intro, Section1, Section2, Section3} from './ClientList.styled'
+import {StyledSelectbox} from '../styles/Selectbox.styled';
+
+// end of imports for filter-and-sort-comp:
+
+
 
 import {
     VictoryZoomContainer,
@@ -26,60 +36,329 @@ import {
     log } from '../../utils';
 
 import {wincTheme} from "../styles/wincTheme";
+import { StyledCheckbox } from '../styles/Checkbox.styled';
 
 const DashboardOverview = () => {
-    const { studentsMockData } = useSelector((state) => state.studentsMockdata);
-    log('comp DashboardOverview:');
-    log(studentsMockData);
-    /*
-        BRANCH_02: DESIGN: 4A) 
-        Create array with unique assignmentIds (e.g. W2D3-1) (should be 56 assignmentIds in this array 
-        in total as string-values). Use fn createArrayWithUniqueValues to create this array.
-    */
-    const listOfUniqueAssignmentIds = createArrayWithUniqueValues(studentsMockData, "assignmentId");
-    log(`listOfUniqueAssignmentIds: `)
-    log(listOfUniqueAssignmentIds);
+
+    // part 1: ETL the data: start
+        const { studentsMockData } = useSelector((state) => state.studentsMockdata);
+        // log('comp DashboardOverview:');
+        // log(studentsMockData);
+
+        const listOfUniqueAssignmentIds = createArrayWithUniqueValues(studentsMockData, "assignmentId");
+        //// listOfUniqueAssignmentIds.sort(); // do not sort.
+        // log(`listOfUniqueAssignmentIds: `)
+        // log(listOfUniqueAssignmentIds);
+
+        const listOfUniqueStudentNames = createArrayWithUniqueValues(studentsMockData, "studentName");
+        listOfUniqueStudentNames.sort();
+        // log(`listOfUniqueStudentNames: `)
+        // log(listOfUniqueStudentNames);
+        
+
+        const arrayWithAssignmentObjects = createArrayWithAssignmentObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
+        // log(`arrayWithAssignmentObjects: `)
+        // log(arrayWithAssignmentObjects);   
+
+
+
+        // let assignmentId = "SCRUM";
+        // let averageGradeDifficulty = calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentsMockData, assignmentId);
+        // log(`averageGradeDifficulty: `)
+        // log(averageGradeDifficulty);
+
+    // part 1: ETL the data: END
+
+
+    // part 2: filter-and-sort-comp: business logic: start
+
+    const [assignmentObjectKeyToSortArrayWithAssignments, setAssignmentObjectKeyToSortArrayWithAssignments] = useState('');
+    const [boolShowDifficultyRating, setBoolShowDifficultyRating] = useState(true);
+    const [boolShowFunRating, setBoolShowFunRating] = useState(true);
+    const [isHovering, setIsHovering] = useState(false);
+    const [studentsToFilterWith, setStudentsToFilterWith] = useState([""]);
+    const [assignmentsToFilterWith, setAssignmentsToFilterWith] = useState([""]);
+    const [arrayWithFilteredAssignmentObjects, setDataToRenderFromUseEffectPipeline] = useState([]);
+
+    const handleFilterOneOrMoreAssignments = (event) => {    
+        let value = Array.from(
+            event.target.selectedOptions, (option) => option.value
+        )   
+        log('hi')
+        setAssignmentsToFilterWith(value);
+    };
+
+    const handleFilterOneOrMoreStudents = (event) => {
+        let value = Array.from(
+            event.target.selectedOptions, (option) => option.value
+        )   
+        setStudentsToFilterWith(value);
+    };
+
+    // const handleSortAssignments = (event) => { 
+    //     setAssignmentObjectKeyToSortArrayWithAssignments(event.target.value);
+    // };    
+
+    const handleChangeBoolDifficultyRating = () => {
+      setBoolShowDifficultyRating(!boolShowDifficultyRating);
+    };
+  
+    const handleChangeBoolFunRating = () => {
+      setBoolShowFunRating(!boolShowFunRating);
+    };
+
+    const handleMouseOver = () => {
+        setIsHovering(true);
+      };
     
-    /*
-        BRANCH_02: DESIGN: 4b) 
-        Create array with 56 assignment-objects. Each object contains 3 keys: 
-            - key assignmentId with value (e.g. W2D3-1)
-            - key difficult with value 'empty array'. 
-            - key fun with value 'empty array'. 
-    */
-    const arrayWithAssignmentObjects = createArrayWithAssignmentObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
-    log(`arrayWithAssignmentObjects: `)
-    log(arrayWithAssignmentObjects);  
-    /*
-        BRANCH_02: DESIGN: 4C) 
-            Create average for 'difficult: fn calculateAverageAssignmentDifficultyOfAllStudents
-            For key difficult, value is average of all 10 students for this assignmentId. Each 
-            student has 1 opinion about each assignment, given that there are 10 students). For 
-            this, filter datastructure 'A' (see point a above) on object-key 'assignmentId' 
-            (into a new array) AND then apply reduce fn on object-key 'difficult' to create 
-            average (1 decimal).
-    */  
-
-    /*
-        BRANCH_02: DESIGN: 4D) 
-            create average for 'fun': fn calculateAssignmentAverageFunLevelOfAllStudents
-            For key fun, same as for key 'difficult', but this time apply reduce fn on object-key 
-            'fun' to create average (also 1 decimal).
-    */  
+    const handleMouseOut = () => {
+    setIsHovering(false);
+    };
 
 
 
-    // let assignmentId = "SCRUM";
-    // let averageGradeDifficulty = calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentsMockData, assignmentId);
-    // log(`averageGradeDifficulty: `)
-    // log(averageGradeDifficulty);
+    const filterByDifficultyRating = (arrayWithAssignments, boolShowDifficultyRating) => {
+        log(`---------------------------------------`);
+        log(`arrayWithAssignments:`);
+        log(arrayWithAssignments);
+        log(`fn filterByDifficultyRating: start: ooo`);
+        log(boolShowDifficultyRating.toString())
+            let filteredArrayWithAssignments = arrayWithAssignments.map(assignment => {
+                // let copiedAssignment = JSON.parse(JSON.stringify(assignment));
+                let {fun, ...assignmentObjectWithoutPropertyDifficulty} = assignment;
+                // code works with 'fun' as work-around/ 'proxy' for 'difficult'. 
+                // 2do  later: issue not on page Students Overview. Figure out why.
+                if (boolShowDifficultyRating) {
+                    return assignment
+                } 
+                return assignmentObjectWithoutPropertyDifficulty
+            });
+        log(`hier:`)
+        log(filteredArrayWithAssignments)
+        return filteredArrayWithAssignments;
+    }
+
+    const filterByFunRating = (arrayWithAssignments, boolShowDifficultyRating) => {
+        log(`---------------------------------------`);
+        log(`fn filterByFunRating: start: ppp`);
+        log(`arrayWithAssignments:`);
+        log(arrayWithAssignments);
+        log(boolShowDifficultyRating.toString())
+            let filteredArrayWithAssignments = arrayWithAssignments.map(assignment => {
+                // let copiedAssignment = JSON.parse(JSON.stringify(assignment));
+                let {difficulty, ...assignmentObjectWithoutPropertyDifficulty} = assignment; 
+                // same anomaly as in fn filterByDifficultyRating above.
+                if (boolShowDifficultyRating) {
+                    return assignment
+                } 
+                return assignmentObjectWithoutPropertyDifficulty
+            });
+
+        return filteredArrayWithAssignments;
+    }
+
+    const sortAssignments = (clients, sortCriteriaFromSelectboxAsSpaceSeparatedString) => {
+        // log(`inside fn sortAssignments: `)
+        // log(clients)
+        // log(sortCriteriaFromSelectboxAsSpaceSeparatedString)
+        if (!sortCriteriaFromSelectboxAsSpaceSeparatedString) {
+            return clients;
+        }  
+        let sortCriteriaFromSelectboxAsArray = sortCriteriaFromSelectboxAsSpaceSeparatedString.split(' ');
+        // log(sortCriteriaFromSelectboxAsArray)
+        let personObjectKey = sortCriteriaFromSelectboxAsArray[0];
+        // log(`personObjectKey: `)
+        // log(personObjectKey)
+        // log(`isAscending: `)
+        let isAscending = sortCriteriaFromSelectboxAsArray[1] === "ascending" ? true : false;
+        // log(isAscending);
+
+        const lookupTable = {
+            assignmentIdShort: 'assignmentIdShort',
+            difficulty: 'difficulty',
+            fun: 'fun'
+        };
+
+        const sortProperty = lookupTable[personObjectKey]; 
+        // log(`sortProperty:`) 
+        // log(sortProperty)
+
+        let sortedPersons;
+        if (!isAscending && (sortProperty === "difficulty" ))  {
+            sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
+            return sortedPersons.reverse();
+            // I choose 'en' as  the unicodeLanguage.
+            // unicode allows user to enter any kind of character.
+        } else if (isAscending && (sortProperty === "difficulty" ))  {
+            sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
+            return sortedPersons;
+        } else if (isAscending && (sortProperty === "fun" )) {
+            sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
+            return sortedPersons;
+        } else if (!isAscending && (sortProperty === "fun")) {
+                sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
+                return sortedPersons.reverse();
+        } else {
+            console.error(`component DashboardOverview: not possible to sort with datatype ${typeof(sortProperty)}. Please investigate. `)
+        }
+    };
+
+    const filterByOneOrMoreAssignments = (arrayWithAssignments, assignmentsToFilterWith ) => {
+        log(`fn filterByOneOrMoreAssignments: start: qqq`);
+        log(assignmentsToFilterWith);
+
+        let arrayFilteredOnAllCriteria = [];              
+        if (assignmentsToFilterWith[0] === "" ) {
+            return arrayWithAssignments;
+        }  else {
+            let copyOfFilteredData = [...arrayWithAssignments];
+            let arrayFilteredOnOneCriterium;
+            
+            for (let filtercriterium of assignmentsToFilterWith) {
+                arrayFilteredOnOneCriterium = copyOfFilteredData.filter(
+                    (personObject) =>           
+                    personObject.assignmentIdShort.indexOf(filtercriterium) !== -1 
+                );
+                arrayFilteredOnAllCriteria.push(...arrayFilteredOnOneCriterium)
+            }
+            return arrayFilteredOnAllCriteria;
+        } 
+    }
+
+            
+  
+    useEffect(() => {
+            let pipelineData = filterByDifficultyRating(arrayWithAssignmentObjects, boolShowDifficultyRating);
+            pipelineData = filterByFunRating(pipelineData, boolShowFunRating);
+            pipelineData = sortAssignments(pipelineData, assignmentObjectKeyToSortArrayWithAssignments);
+            // pipelineData = filterByOneOrMoreAssignments(pipelineData, assignmentsToFilterWith );
+            setDataToRenderFromUseEffectPipeline(pipelineData);
+        }, 
+        [boolShowDifficultyRating, boolShowFunRating, assignmentObjectKeyToSortArrayWithAssignments ]
+    );
+
+
+
+    // part 2: filter-and-sort-comp: business logic: end
+
+
+
 
 
     const [zoomDomain, setZoomDomain] = useState({x: [0, 10], y: [0, 5]}); // nr of assignments to display when you open the page.
     // 'zoomDomain' more info: https://formidable.com/open-source/victory/docs/victory-zoom-container#zoomdomain
 
+
+
+
   return (
     <>
+
+<>
+    <Container> 
+        <ClientListStyled>
+            <Intro>Dashboard Overview</Intro>
+            <FormControlArea>
+                <Section1>
+                <StyledCheckbox>
+                        <Checkbox
+                            label="Show difficulty rating"
+                            value={boolShowDifficultyRating}
+                            onChange={handleChangeBoolDifficultyRating}
+                        />
+                    </StyledCheckbox>
+
+                </Section1>
+                <Section1>
+                    <StyledCheckbox>
+                        <Checkbox
+                            label="Show fun rating"
+                            value={boolShowFunRating}
+                            onChange={handleChangeBoolFunRating}
+                        />
+                    </StyledCheckbox>
+                </Section1>
+
+                <Section1> 
+                    <StyledSelectbox                  
+                        onChange={(e) => setAssignmentObjectKeyToSortArrayWithAssignments(e.target.value)}                 
+                    >      
+                        {/* 
+                            work-around:
+                                to sort on difficulty, pass 'fun' to useEffect props-pipeline.
+                                to sort on fun, pass 'difficulty' to useEffect props-pipeline.
+                            reason/ symptom:
+                            somehow Victorychart responds to 'fun' as 'difficulty' and vice versa.
+                            Not sure why. 
+                            No need to fix, because this work-around creates the correct output. 
+                            2do later (if time left): investigate
+                        
+                        */}
+                        <option value="" >Sort by:</option>
+                        <option value="" >do not sort</option>
+                        <option value="fun ascending" >difficulty a-z</option> 
+                        <option value="fun descending" >difficulty z-a</option>
+                        <option value="difficulty ascending" >fun a-z</option>
+                        <option value="difficulty descending" >fun z-a</option>
+                    </StyledSelectbox>
+                </Section1>
+                 
+                <Section2>
+                    {/* <StyledSelectbox 
+                        multiple={true}
+                        value={assignmentsToFilterWith} // 2do: check if this array contains correct values !!
+                        onChange={(event) => handleFilterOneOrMoreAssignments(event)  }   
+                        onMouseOver={handleMouseOver} 
+                        onMouseOut={handleMouseOut}                
+                    >     
+                        <option value="" >Filter by assignments:</option>                 
+                        <option value="" >do not filter</option>
+                        {listOfUniqueAssignmentIds.map(item => {
+                            return (<option key={item} value={item}>{item}</option>);
+                        })}   
+                        </StyledSelectbox>
+                        {isHovering && <h3>Press Ctrl or Shift to select multiple assignments</h3>} */}
+                </Section2>
+
+                <Section3>
+                    {/* <div>
+                    <StyledSelectbox 
+                        multiple={true}
+                        value={studentsToFilterWith}
+                        onChange={(e) => handleFilterOneOrMoreStudents(e)  }     
+                        onMouseOver={handleMouseOver} 
+                        onMouseOut={handleMouseOut}                 
+                    >    
+                        <option value="" >Filter by students:</option>
+                        <option value="" >do not filter</option>  
+                        {listOfUniqueStudentNames.map(item => {  // 2do: check if this array contains correct values !!
+                            return (<option key={item} value={item}>{item}</option>);
+                        })}
+                    </StyledSelectbox>
+                    {isHovering && <h3>Press Ctrl or Shift to select multiple students</h3>}
+                    </div> */}
+                </Section3>
+            </FormControlArea>
+            <Headers>
+
+            </Headers>
+        </ClientListStyled>  
+    </Container>
+    </>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <VictoryChart 
             theme={wincTheme} 
             width={800} 
@@ -150,12 +429,12 @@ const DashboardOverview = () => {
                             }}  
                         />
                     }
-                    data={arrayWithAssignmentObjects}
+                    data={arrayWithFilteredAssignmentObjects}
                     x = "assignmentIdShort"
                     y = "fun"
                     // tickValues={['1.0', '2.0', '3.0', '4.0', '5.0']}
                     tickValues={[1, 2, 3, 4, 5]}
-                    tickFormat={arrayWithAssignmentObjects.map(
+                    tickFormat={arrayWithFilteredAssignmentObjects.map(
                         avg => avg.assignmentId
                         )}
                 />
@@ -192,11 +471,11 @@ const DashboardOverview = () => {
                             }} 
                         />
                     }                    
-                    data={arrayWithAssignmentObjects}
+                    data={arrayWithFilteredAssignmentObjects}
                     x = "assignmentIdShort"
                     y = "difficulty"
                     tickValues={[1, 2, 3, 4, 5]}
-                    tickFormat={arrayWithAssignmentObjects.map(
+                    tickFormat={arrayWithFilteredAssignmentObjects.map(
                         avg => avg.assignmentId
                         )}
                 />   
@@ -205,7 +484,7 @@ const DashboardOverview = () => {
                 // tickValues specifies both the number of ticks and where
                 // they are placed on the axis
                 // tickValues={[1.0, 2.0, 3, 4, 5]}
-                tickFormat={arrayWithAssignmentObjects.map(
+                tickFormat={arrayWithFilteredAssignmentObjects.map(
                 avg => avg.assignmentIdShort 
                 /*
                  pitfall: avg.assignmentId will display long names on x-axis: e.g. actual result:
@@ -283,20 +562,18 @@ const DashboardOverview = () => {
                     }}  
                 />
             }    
-            data={arrayWithAssignmentObjects}
+            data={arrayWithFilteredAssignmentObjects}
             x = "assignmentIdShort"
-            y = "difficulty"  
+            y = "victoryBrushContainer" 
             /*
-              nice extra: 2do: add checkbox for user to choose between 'fun' and 'difficult' to be shown 
-              in VictoryBrushContainer.
-              Selection of user in VictoryZoomContainer (e.g. 'fun' and/or 'difficult') must be independent of 
-              what user selects in VictoryBrushContainer. 
-              In VictoryBrushContainer: 'difficulty' will be default. With checkbox user can also select 'fun'.
+                with y="difficulty", unchecking 'Show difficulty rating'
+                will make disappear the barchart in 
+                VictoryBrushContainer. 
             */
         />
         <VictoryAxis  // 
             // tickValues={[1.0, 2.0, 3.0, 4.0, 5.0]}
-            tickFormat={arrayWithAssignmentObjects.map(
+            tickFormat={arrayWithFilteredAssignmentObjects.map(
                 avg => avg.assignmentIdShort
                 )}
                 style={{

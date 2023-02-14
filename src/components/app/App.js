@@ -88,7 +88,7 @@ function App() {
                         <Link to="/tableOverview">Table Overview</Link>
                     </StyledNavLink>
                     <StyledNavLink>
-                        <Link to="/sortStudentsByAverageGrades">Sort Students By Average Grades</Link>
+                        <Link to="/sortStudentsByAverageGrades">Students Overview</Link>
                     </StyledNavLink>
                     </div>
                     <Routes>

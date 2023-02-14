@@ -80,6 +80,7 @@
         assignmentId,
         assignmentIdShort: makeAssignmentIdShort(assignmentId, 6), // works
         difficulty: calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId),
+        brushContainer: calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId),
         fun: calculateAverageForFunForOneAssignmentOfAllStudents(studentMockData, assignmentId),
         label: `Opdracht: ${ assignmentId
         }, avg difficultyRating: ${calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId).toFixed(1)}, 
