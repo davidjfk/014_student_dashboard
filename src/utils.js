@@ -80,6 +80,7 @@
         assignmentId,
         assignmentIdShort: makeAssignmentIdShort(assignmentId, 6), // works
         difficulty: calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId),
+        victoryBrushContainer: calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId),
         fun: calculateAverageForFunForOneAssignmentOfAllStudents(studentMockData, assignmentId),
         label: `Opdracht: ${ assignmentId
         }, avg difficultyRating: ${calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId).toFixed(1)}, 
@@ -87,8 +88,9 @@
     });
 
     //1of3: 
-    export const createArrayWithAssignmentObjects = (createAssignmentObjectForEachAssignmentId, studentsMockData, arrayWithPrimitiveValues) =>
-    arrayWithPrimitiveValues.map(primitiveValue => createAssignmentObjectForEachAssignmentId(studentsMockData, primitiveValue));
+        export const createArrayWithAssignmentObjects =  (createAssignmentObjectForEachAssignmentId, studentsMockData,  arrayWithPrimitiveValues) =>
+        arrayWithPrimitiveValues.map(primitiveValue => createAssignmentObjectForEachAssignmentId(studentsMockData, primitiveValue));
+
 // end of fns Student Dashboard and student-pages.
 
 

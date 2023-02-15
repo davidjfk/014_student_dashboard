@@ -9,14 +9,14 @@ import studentMockData from '../../data/students-mock-data.csv'; // first import
 
 import {log} from  '../../utils';
 
+import AssignmentsOverview from "../assignmentsoverview/AssignmentsOverview.js";
 import BarChart from '../barchart/BarChart';
 import LineChart from "../linechart/LineChart";
-import DashboardOverview from "../dashboard-overview/DashboardOverview.js";
-import StudentPageOverview from "../studentPageOverview/StudentPageOverview.js";
+import StudentPages from "../studentpages/StudentPages.js";
 // import Student from "../student/Student";
 import Scatterplot from "../scatterplot/Scatterplot";
 import TableOverview from "../table-overview/TableOverview";
-import SortStudentsByAverageGrades from "../sortStudentsByAverageGrades/SortStudentsByAverageGrades";
+import SortStudentsByAverageGrades from "../studentsoverview/StudentsOverview";
 
 
 import {AppStyled} from "./App.styled";
@@ -24,6 +24,7 @@ import {NavigationStyled} from "./Navigation.styled";
 import {StyledNavLink} from "./NavLink.styled";
 import {theme} from "../styles/appStyleTheme";
 import {generateRandomPersonId} from '../../utils';
+
 
 
 const updateKeysOfArrayWithStudentObjects = (studentMockData) => {
@@ -70,17 +71,17 @@ function App() {
                 <NavigationStyled>
                     <div className="navBar">  
                     <StyledNavLink>
-                        <Link to="/">Dashboard Overview</Link>
+                        <Link to="/">Assignments Overview</Link>
                     </StyledNavLink>
                     <StyledNavLink>
-                        <Link to="/barchart">BarChart</Link>
+                        <Link to="/StudentsOverview">Students Overview</Link>
+                    </StyledNavLink>
+                    <StyledNavLink>
+                        <Link to="/studentPages">Student Pages</Link>
                     </StyledNavLink>
                     <StyledNavLink>
                         <Link to="/linechart">LineChart</Link>
                     </StyledNavLink>                   
-                    <StyledNavLink>
-                        <Link to="/studentPages">Student Pages</Link>
-                    </StyledNavLink>
                     <StyledNavLink>
                         <Link to="/scatterplot">Scatterplot</Link>
                     </StyledNavLink>
@@ -88,19 +89,18 @@ function App() {
                         <Link to="/tableOverview">Table Overview</Link>
                     </StyledNavLink>
                     <StyledNavLink>
-                        <Link to="/sortStudentsByAverageGrades">Sort Students By Average Grades</Link>
+                        <Link to="/barchart">BarChart</Link>
                     </StyledNavLink>
                     </div>
                     <Routes>
-                    <Route path="/" element={<DashboardOverview  />} />  
-                    <Route path="/barchart" element={<BarChart  />} /> 
+                    <Route path="/" element={<AssignmentsOverview  />} />  
+                    <Route path="/StudentsOverview" element={<SortStudentsByAverageGrades />} /> 
+                    <Route path="/studentPages/*" element={<StudentPages />} />  
                     <Route path="/linechart" element={<LineChart  />} /> 
-                    <Route path="/studentPages/*" element={<StudentPageOverview />} />  
-
                     <Route path="/scatterplot" element={<Scatterplot  />} />  
-                    <Route path="/tableOverview" element={<TableOverview  />} />  
-                    <Route path="/sortStudentsByAverageGrades" element={<SortStudentsByAverageGrades />} />  
-                    <Route path="*" element={<DashboardOverview  />} />  
+                    <Route path="/tableOverview" element={<TableOverview  />} /> 
+                    <Route path="/barchart" element={<BarChart  />} /> 
+                    <Route path="*" element={<AssignmentsOverview  />} />  
                     </Routes>
 
                 </NavigationStyled>

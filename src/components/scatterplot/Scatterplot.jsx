@@ -34,7 +34,7 @@ import {
 import {wincTheme} from "../styles/wincTheme";
 
 const Scatterplot = () => {
-
+// part 1: ETL the data: start: 
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);
     log('comp Scatterplot:');
     log(studentsMockData);
@@ -65,8 +65,18 @@ const Scatterplot = () => {
         const arrayWithUniqueStudentObjects = createArrayWithStudentObjects(createStudentObjectForEachStudentId, studentsMockData, arrayWithUniqueStudents);
         log(`comp scatterplot2: arrayWithUniqueStudentObjects: `)
         log(arrayWithUniqueStudentObjects);  
+// part 1: ETL the data: END 
 
-  return (
+// part 2: filter-and-sort-comp: business logic: START
+    //2do: put fns to calculate correlation coefficient and outliers in file utils.js
+// part 2: filter-and-sort-comp: business logic: END
+
+// part 3: scatterplot: business logic: START
+    // not applicable
+// part 3: scatterplot: business logic: END
+
+// part 4: scatterplot: dumb component: START      
+    return (
     <>
         <h2> bonus: scatterplot </h2>
         {/* <VictoryChart
@@ -118,7 +128,7 @@ const Scatterplot = () => {
         </VictoryChart> */}
 
 
-<VictoryChart 
+    <VictoryChart 
             theme={wincTheme} 
             width={300} 
             height={230}    
@@ -325,10 +335,8 @@ const Scatterplot = () => {
                     }                    
                 }}
             />
-          </VictoryChart>
-
-
-
+    </VictoryChart>
+{/* // part 4: scatterplot: dumb component: END  */}
     </>
   )
 }

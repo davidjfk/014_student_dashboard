@@ -6,7 +6,7 @@ import { createArrayWithUniqueValues, log } from '../../utils';
 import Student from '../student/Student';
 
 
-const StudentPageOverview = () => {
+const StudentPages = () => {
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);
     log('comp StudentPage:');
     // log(studentsMockData);
@@ -38,4 +38,4 @@ const StudentPageOverview = () => {
   )
 }
 
-export default StudentPageOverview
+export default StudentPages

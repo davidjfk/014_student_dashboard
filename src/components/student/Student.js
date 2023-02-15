@@ -24,13 +24,12 @@ import { makeAssignmentIdShort } from '../../utils';
 import {wincTheme} from "../styles/wincTheme";
 
 const Student = (props) => {
+// part 1: ETL the data: START: 
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);
     let {id} = useParams()
     log(`id:`);
     log(id);
 
-    log('comp StudentPage:');
-    // log(studentsMockData);
 
     let listOfUniqueStudentNames = createArrayWithUniqueValues(studentsMockData, "studentName"); // rename to createArrayWithUniqueStudentNames ??
     log(listOfUniqueStudentNames);
@@ -68,11 +67,22 @@ const Student = (props) => {
     let allGradesForFunAndDifficultyFor1Student = createallGradesForFunAndDifficultyFor1StudentFor1Student(arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId)
     log(`allGradesForFunAndDifficultyFor1Student: `)
     log(allGradesForFunAndDifficultyFor1Student);
+// part 1: ETL the data: END: 
 
-    
+// part 2: Student Pages: business logic: START
+    // not applicable
+// part 2: Student Pages: business logic: START
+
+// part 3: victory-brush-and-zoom: business logic: START
     const [zoomDomain, setZoomDomain] = useState({x: [0, 10], y: [0, 5]}); // nr of assignments to display when you open the page.
     // 'zoomDomain' more info: https://formidable.com/open-source/victory/docs/victory-zoom-container#zoomdomain
+// part 3: victory-brush-and-zoom: business logic: END
 
+// part 4: filter-and-sort-comp: dumb component: START  
+    // not applicable
+// part 4: filter-and-sort-comp: dumb component: START  
+
+{/* part 5: victory-brush-and-zoom: dumb component: START */}
   return (
     <>
     <div className="studentPage">
@@ -351,6 +361,7 @@ const Student = (props) => {
             }}
         />
         </VictoryChart>
+{/* part 5: victory-brush-and-zoom: dumb component: START */}
     </>
 
 
