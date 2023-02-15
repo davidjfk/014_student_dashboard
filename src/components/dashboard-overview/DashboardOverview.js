@@ -33,12 +33,16 @@ import {
     createArrayWithAssignmentObjects,
     createArrayWithUniqueValues, 
     createAssignmentObjectForEachAssignmentId,
-    log } from '../../utils';
+    log } from '../../utils'; 
 
 import {wincTheme} from "../styles/wincTheme";
 import { StyledCheckbox } from '../styles/Checkbox.styled';
 
 const DashboardOverview = () => {
+
+
+
+
 
     // part 1: ETL the data: start
         const { studentsMockData } = useSelector((state) => state.studentsMockdata);
@@ -80,13 +84,13 @@ const DashboardOverview = () => {
     const [assignmentsToFilterWith, setAssignmentsToFilterWith] = useState([""]);
     const [arrayWithFilteredAssignmentObjects, setDataToRenderFromUseEffectPipeline] = useState([]);
 
-    const handleFilterOneOrMoreAssignments = (event) => {    
-        let value = Array.from(
-            event.target.selectedOptions, (option) => option.value
-        )   
-        log('hi')
-        setAssignmentsToFilterWith(value);
-    };
+    // const handleFilterOneOrMoreAssignments = (event) => {    
+    //     let value = Array.from(
+    //         event.target.selectedOptions, (option) => option.value
+    //     )   
+    //     log('hi')
+    //     setAssignmentsToFilterWith(value);
+    // };
 
     const handleFilterOneOrMoreStudents = (event) => {
         let value = Array.from(
@@ -95,9 +99,7 @@ const DashboardOverview = () => {
         setStudentsToFilterWith(value);
     };
 
-    // const handleSortAssignments = (event) => { 
-    //     setAssignmentObjectKeyToSortArrayWithAssignments(event.target.value);
-    // };    
+
 
     const handleChangeBoolDifficultyRating = () => {
       setBoolShowDifficultyRating(!boolShowDifficultyRating);
@@ -225,7 +227,7 @@ const DashboardOverview = () => {
         } 
     }
 
-            
+  
   
     useEffect(() => {
             let pipelineData = filterByDifficultyRating(arrayWithAssignmentObjects, boolShowDifficultyRating);
@@ -234,7 +236,7 @@ const DashboardOverview = () => {
             // pipelineData = filterByOneOrMoreAssignments(pipelineData, assignmentsToFilterWith );
             setDataToRenderFromUseEffectPipeline(pipelineData);
         }, 
-        [boolShowDifficultyRating, boolShowFunRating, assignmentObjectKeyToSortArrayWithAssignments ]
+        [arrayWithAssignmentObjects, boolShowDifficultyRating, boolShowFunRating, assignmentObjectKeyToSortArrayWithAssignments ]
     );
 
 
@@ -345,13 +347,6 @@ const DashboardOverview = () => {
         </ClientListStyled>  
     </Container>
     </>
-
-
-
-
-
-
-
 
 
 
@@ -565,6 +560,7 @@ const DashboardOverview = () => {
             data={arrayWithFilteredAssignmentObjects}
             x = "assignmentIdShort"
             y = "victoryBrushContainer" 
+            // y = "difficulty" 
             /*
                 with y="difficulty", unchecking 'Show difficulty rating'
                 will make disappear the barchart in 

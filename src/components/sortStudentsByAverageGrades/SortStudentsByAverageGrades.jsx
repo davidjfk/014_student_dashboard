@@ -46,11 +46,7 @@ const SortStudentsByAverageGrades = () => {
         const { studentsMockData } = useSelector((state) => state.studentsMockdata);
         // log('comp DashboardOverview:');
         // log(studentsMockData);
-        /*
-            BRANCH_02: DESIGN: 4A) 
-            Create array with unique assignmentIds (e.g. W2D3-1) (should be 56 assignmentIds in this array 
-            in total as string-values). Use fn createArrayWithUniqueValues to create this array.
-        */
+
         const listOfUniqueAssignmentIds = createArrayWithUniqueValues(studentsMockData, "assignmentId");
         //// listOfUniqueAssignmentIds.sort(); // do not sort.
         // log(`listOfUniqueAssignmentIds: `)
@@ -86,36 +82,52 @@ const SortStudentsByAverageGrades = () => {
     const [boolShowDifficultyRating, setBoolShowDifficultyRating] = useState(true);
     const [boolShowFunRating, setBoolShowFunRating] = useState(true);
     const [isHovering, setIsHovering] = useState(false);
-    const [studentsToFilterWith, setStudentsToFilterWith] = useState([""]);
+    const [studentsFromCheckBox, setStudentsFromCheckbox] = useState(['Aranka', 'Evelyn', 'Floris', 'Hector', 'Martina', 'Maurits', 'Rahima', 'Sandra', 'Storm', 'Wietske']);
+    const ref = useRef(true); // goal: checkboxes must be checked by default
+    // more info: https://bobbyhadz.com/blog/react-set-checkbox-checked
+
+    log(`ref: `);
+    log(ref.current.checked);
+    log(ref.current)
+
+    const [studentsFromSelectBox, setStudentsFromSelectBox] = useState([""]); // works, but requirements state 'checkbox' instead.
     const [assignmentsToFilterWith, setAssignmentsToFilterWith] = useState([""]);
     const [arrayWithFilteredStudentObjects, setDataToRenderFromUseEffectPipeline] = useState([]);
 
-    const handleFilterOneOrMoreAssignments = (event) => {    
-        let value = Array.from(
-            event.target.selectedOptions, (option) => option.value
-        )   
-        log('hi')
-        setAssignmentsToFilterWith(value);
-    };
+    log(`studentsFromCheckbox:`);
+    log(studentsFromCheckBox);
+    log(`studentsFromSelectBox:`);
+    log(studentsFromSelectBox);
 
-    const handleFilterOneOrMoreStudents = (event) => {
+    const handleFilterOneOrMoreStudentsViaSelectBox = (event) => {
         let value = Array.from(
             event.target.selectedOptions, (option) => option.value
         )   
-        setStudentsToFilterWith(value);
+        setStudentsFromSelectBox(value);
     };
 
     const handleFilterOneOrMoreStudentsViaCheckbox = (event) => {
-        // let value = Array.from(
-        //     event.target.selectedOptions, (option) => option.value
-        // )   
-        // setStudentsToFilterWith(value);
+        log(`fn handleFilterOneOrMoreStudentsViaCheckbox: start: `);
+        log(event.target.checked);
+        const isChecked = event.target.checked;
+        if(isChecked){
+            // source of code in this fn is a class-based component: https://medium.com/codex/handling-checkboxes-in-react-3a2514b140d2
+            // this.setState({ languages: [...this.state.languages, event.target.value] });
+            setStudentsFromCheckbox([...studentsFromCheckBox, event.target.value]);
+        }else{
+            // let index = this.state.languages.indexOf(event.target.value);
+            let studentsCopy = [...studentsFromCheckBox]
+            let index = studentsCopy.indexOf(event.target.value);
+            // this.state.languages.splice(index, 1);
+            studentsCopy.splice(index, 1);
+            // this.setState({ languages: this.state.languages });
+            setStudentsFromCheckbox(studentsCopy);
+            // log(`languages: `);
+            // log(languages)
+        }
     };
 
-
-    // const handleSortAssignments = (event) => { 
-    //     setAssignmentObjectKeyToSortArrayWithAssignments(event.target.value);
-    // };    
+ 
 
     const handleChangeBoolDifficultyRating = () => {
       setBoolShowDifficultyRating(!boolShowDifficultyRating);
@@ -241,39 +253,16 @@ const SortStudentsByAverageGrades = () => {
             return arrayFilteredOnAllCriteria;
         } 
     }
-
-    const filterByOneOrMoreStudentsviaCheckbox = (arrayWithStudents, studentsToFilterWith ) => {
-        log(`fn filterByOneOrMoreStudents: start: sss`);
-        log(studentsToFilterWith);
-        
-
-        // let arrayFilteredOnAllCriteria = [];              
-        // if (studentsToFilterWith[0] === "" ) {
-        //     return arrayWithStudents;
-        // }  else {
-        //     let copyOfFilteredData = [...arrayWithStudents];
-        //     let arrayFilteredOnOneCriterium;
-            
-        //     for (let filtercriterium of studentsToFilterWith) {
-        //         arrayFilteredOnOneCriterium = copyOfFilteredData.filter(
-        //             (personObject) =>           
-        //             personObject.studentName.indexOf(filtercriterium) !== -1 //note-to-self: studentName hard-coded.
-        //         );
-        //         arrayFilteredOnAllCriteria.push(...arrayFilteredOnOneCriterium)
-        //     }
-        //     return arrayFilteredOnAllCriteria;
-        // } 
-    }
-  
+ 
     useEffect(() => {
             let pipelineData = filterByDifficultyRating(arrayWithUniqueStudentObjects, boolShowDifficultyRating);
             pipelineData = filterByFunRating(pipelineData, boolShowFunRating);
-
-            pipelineData = filterByOneOrMoreStudents(pipelineData, studentsToFilterWith );
+            pipelineData = filterByOneOrMoreStudents(pipelineData, studentsFromCheckBox ); 
+            // pipelineData = filterByOneOrMoreStudents(pipelineData, studentsFromSelectBox ); //works, but I switch to checkboxes (is Winc-requirement)
             pipelineData = sortStudents(pipelineData, assignmentObjectKeyToSortArrayWithAssignments);
             setDataToRenderFromUseEffectPipeline(pipelineData);
         }, 
-        [boolShowDifficultyRating, boolShowFunRating, assignmentObjectKeyToSortArrayWithAssignments, studentsToFilterWith ]
+        [boolShowDifficultyRating, boolShowFunRating, assignmentObjectKeyToSortArrayWithAssignments, studentsFromCheckBox ]
     );
 
 
@@ -332,40 +321,73 @@ const SortStudentsByAverageGrades = () => {
                     </StyledSelectbox>
                 </Section1> 
                 <Section2>
-
-                    {/* <StyledSelectbox 
-                        multiple={true}
-                        value={assignmentsToFilterWith} // 2do: check if this array contains correct values !!
-                        onChange={(event) => handleFilterOneOrMoreAssignments(event)  }   
-                        // onMouseOver={handleMouseOver} 
-                        // onMouseOut={handleMouseOut}                
-                    >     
-                        <option value="" >Filter by assignments:</option>                 
-                        <option value="" >do not filter</option>
-                        {listOfUniqueAssignmentIds.map(item => {
-                            return (<option key={item} value={item}>{item}</option>);
-                        })}   
-                        </StyledSelectbox>
-                        {isHovering && <h3>Press Ctrl or Shift to select multiple assignments</h3>} */}
+                    <div className='studentsOverview'>
+                        <form>
+                        <p>Filter students:</p>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Aranka"  onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Aranka</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Evelyn" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Evelyn</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Floris"  onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Floris</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Hector" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Hector</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Martina" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Martina</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Maurits" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Maurits</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Rahima" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Rahima</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Sandra" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Sandra</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Storm" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Storm</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Wietske" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Wietske</label><br />
+                        </StyledCheckbox>
+                        <br />
+                        </form>
+                        {/* <div>{studentsFromCheckbox}</div> */} 
+                    </div>
                 </Section2>
                 <Section2>
-                        {listOfUniqueStudentNames.map(student => {  // 2do: check if this array contains correct values !!
+                        {/* 2do later: map the checkboxes */}
+                        {/* {listOfUniqueStudentNames.map((student, index) => {  // 2do: check if this array contains correct values !!
                             return (                
                             <StyledCheckbox>
                                 <Checkbox
                                     label={student}
-                                    value={studentsToFilterWith}
-                                    onChange={(e) => handleFilterOneOrMoreStudentsViaCheckbox(e)  }  
+                                    value={studentsFromSelectBox[index]}
+                                    onChange={handleFilterOneOrMoreStudentsViaCheckbox}  
                                 />
                             </StyledCheckbox>);
-                        })}
+                        })} */}
                 </Section2>
                 <Section3>
                     <div>
                     <StyledSelectbox 
                         multiple={true}
-                        value={studentsToFilterWith}
-                        onChange={(e) => handleFilterOneOrMoreStudents(e)  }     
+                        value={studentsFromSelectBox}
+                        onChange={(e) => handleFilterOneOrMoreStudentsViaSelectBox(e)  }     
                         onMouseOver={handleMouseOver} 
                         onMouseOut={handleMouseOut}                 
                     >    
