@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef  } from 'react';
+import React, { useState, useEffect, useMemo  } from 'react';
 import { useSelector } from "react-redux";
 
 // start of imports for filter-and-sort-comp:
@@ -32,19 +32,15 @@ import {
     calculateAverageForFunForOneAssignmentOfAllStudents,
     createArrayWithAssignmentObjects,
     createArrayWithUniqueValues, 
+    makeAssignmentIdShort,
     createAssignmentObjectForEachAssignmentId,
     log } from '../../utils'; 
 
 import {wincTheme} from "../styles/wincTheme";
 import { StyledCheckbox } from '../styles/Checkbox.styled';
 
-const DashboardOverview = () => {
-
-
-
-
-
-    // part 1: ETL the data: start
+const AssignmentsOverview = () => {
+// part 1: ETL the data: start: 
         const { studentsMockData } = useSelector((state) => state.studentsMockdata);
         // log('comp DashboardOverview:');
         // log(studentsMockData);
@@ -59,207 +55,192 @@ const DashboardOverview = () => {
         // log(`listOfUniqueStudentNames: `)
         // log(listOfUniqueStudentNames);
         
-
-        const arrayWithAssignmentObjects = createArrayWithAssignmentObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
+        let arrayWithAssignmentObjects = useMemo(() => { 
+            return createArrayWithAssignmentObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds)}, 
+            [studentsMockData]
+        );
+        // let arrayWithAssignmentObjects = createArrayWithAssignmentObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
         // log(`arrayWithAssignmentObjects: `)
-        // log(arrayWithAssignmentObjects);   
-
-
+        // log(arrayWithAssignmentObjects);  
 
         // let assignmentId = "SCRUM";
         // let averageGradeDifficulty = calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentsMockData, assignmentId);
         // log(`averageGradeDifficulty: `)
         // log(averageGradeDifficulty);
-
-    // part 1: ETL the data: END
-
-
-    // part 2: filter-and-sort-comp: business logic: start
-
-    const [assignmentObjectKeyToSortArrayWithAssignments, setAssignmentObjectKeyToSortArrayWithAssignments] = useState('');
-    const [boolShowDifficultyRating, setBoolShowDifficultyRating] = useState(true);
-    const [boolShowFunRating, setBoolShowFunRating] = useState(true);
-    const [isHovering, setIsHovering] = useState(false);
-    const [studentsToFilterWith, setStudentsToFilterWith] = useState([""]);
-    const [assignmentsToFilterWith, setAssignmentsToFilterWith] = useState([""]);
-    const [arrayWithFilteredAssignmentObjects, setDataToRenderFromUseEffectPipeline] = useState([]);
-
-    // const handleFilterOneOrMoreAssignments = (event) => {    
-    //     let value = Array.from(
-    //         event.target.selectedOptions, (option) => option.value
-    //     )   
-    //     log('hi')
-    //     setAssignmentsToFilterWith(value);
-    // };
-
-    const handleFilterOneOrMoreStudents = (event) => {
-        let value = Array.from(
-            event.target.selectedOptions, (option) => option.value
-        )   
-        setStudentsToFilterWith(value);
-    };
+// part 1: ETL the data: END 
 
 
+// part 2: filter-and-sort-comp: business logic: start
+        const [assignmentObjectKeyToSortArrayWithAssignments, setAssignmentObjectKeyToSortArrayWithAssignments] = useState('');
+        const [boolShowDifficultyRating, setBoolShowDifficultyRating] = useState(true);
+        const [boolShowFunRating, setBoolShowFunRating] = useState(true);
+        const [isHovering, setIsHovering] = useState(false);
+        const [studentsToFilterWith, setStudentsToFilterWith] = useState([""]);
+        const [assignmentsToFilterWith, setAssignmentsToFilterWith] = useState([""]);
+        const [arrayWithFilteredAssignmentObjects, setDataToRenderFromUseEffectPipeline] = useState([]);
 
-    const handleChangeBoolDifficultyRating = () => {
-      setBoolShowDifficultyRating(!boolShowDifficultyRating);
-    };
-  
-    const handleChangeBoolFunRating = () => {
-      setBoolShowFunRating(!boolShowFunRating);
-    };
+        // const handleFilterOneOrMoreAssignments = (event) => {    
+        //     let value = Array.from(
+        //         event.target.selectedOptions, (option) => option.value
+        //     )   
+        //     log('hi')
+        //     setAssignmentsToFilterWith(value);
+        // };
 
-    const handleMouseOver = () => {
-        setIsHovering(true);
-      };
-    
-    const handleMouseOut = () => {
-    setIsHovering(false);
-    };
-
-
-
-    const filterByDifficultyRating = (arrayWithAssignments, boolShowDifficultyRating) => {
-        log(`---------------------------------------`);
-        log(`arrayWithAssignments:`);
-        log(arrayWithAssignments);
-        log(`fn filterByDifficultyRating: start: ooo`);
-        log(boolShowDifficultyRating.toString())
-            let filteredArrayWithAssignments = arrayWithAssignments.map(assignment => {
-                // let copiedAssignment = JSON.parse(JSON.stringify(assignment));
-                let {fun, ...assignmentObjectWithoutPropertyDifficulty} = assignment;
-                // code works with 'fun' as work-around/ 'proxy' for 'difficult'. 
-                // 2do  later: issue not on page Students Overview. Figure out why.
-                if (boolShowDifficultyRating) {
-                    return assignment
-                } 
-                return assignmentObjectWithoutPropertyDifficulty
-            });
-        log(`hier:`)
-        log(filteredArrayWithAssignments)
-        return filteredArrayWithAssignments;
-    }
-
-    const filterByFunRating = (arrayWithAssignments, boolShowDifficultyRating) => {
-        log(`---------------------------------------`);
-        log(`fn filterByFunRating: start: ppp`);
-        log(`arrayWithAssignments:`);
-        log(arrayWithAssignments);
-        log(boolShowDifficultyRating.toString())
-            let filteredArrayWithAssignments = arrayWithAssignments.map(assignment => {
-                // let copiedAssignment = JSON.parse(JSON.stringify(assignment));
-                let {difficulty, ...assignmentObjectWithoutPropertyDifficulty} = assignment; 
-                // same anomaly as in fn filterByDifficultyRating above.
-                if (boolShowDifficultyRating) {
-                    return assignment
-                } 
-                return assignmentObjectWithoutPropertyDifficulty
-            });
-
-        return filteredArrayWithAssignments;
-    }
-
-    const sortAssignments = (clients, sortCriteriaFromSelectboxAsSpaceSeparatedString) => {
-        // log(`inside fn sortAssignments: `)
-        // log(clients)
-        // log(sortCriteriaFromSelectboxAsSpaceSeparatedString)
-        if (!sortCriteriaFromSelectboxAsSpaceSeparatedString) {
-            return clients;
-        }  
-        let sortCriteriaFromSelectboxAsArray = sortCriteriaFromSelectboxAsSpaceSeparatedString.split(' ');
-        // log(sortCriteriaFromSelectboxAsArray)
-        let personObjectKey = sortCriteriaFromSelectboxAsArray[0];
-        // log(`personObjectKey: `)
-        // log(personObjectKey)
-        // log(`isAscending: `)
-        let isAscending = sortCriteriaFromSelectboxAsArray[1] === "ascending" ? true : false;
-        // log(isAscending);
-
-        const lookupTable = {
-            assignmentIdShort: 'assignmentIdShort',
-            difficulty: 'difficulty',
-            fun: 'fun'
+        const handleFilterOneOrMoreStudents = (event) => {
+            let value = Array.from(
+                event.target.selectedOptions, (option) => option.value
+            )   
+            setStudentsToFilterWith(value);
         };
 
-        const sortProperty = lookupTable[personObjectKey]; 
-        // log(`sortProperty:`) 
-        // log(sortProperty)
 
-        let sortedPersons;
-        if (!isAscending && (sortProperty === "difficulty" ))  {
-            sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
-            return sortedPersons.reverse();
-            // I choose 'en' as  the unicodeLanguage.
-            // unicode allows user to enter any kind of character.
-        } else if (isAscending && (sortProperty === "difficulty" ))  {
-            sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
-            return sortedPersons;
-        } else if (isAscending && (sortProperty === "fun" )) {
-            sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
-            return sortedPersons;
-        } else if (!isAscending && (sortProperty === "fun")) {
+        const handleChangeBoolDifficultyRating = () => {
+        setBoolShowDifficultyRating(!boolShowDifficultyRating);
+        };
+    
+        const handleChangeBoolFunRating = () => {
+        setBoolShowFunRating(!boolShowFunRating);
+        };
+
+        const handleMouseOver = () => {
+            setIsHovering(true);
+        };
+        
+        const handleMouseOut = () => {
+        setIsHovering(false);
+        };
+
+
+        const filterByDifficultyRating = (arrayWithAssignments, boolShowDifficultyRating) => {
+            log(`---------------------------------------`);
+            log(`arrayWithAssignments:`);
+            log(arrayWithAssignments);
+            log(`fn filterByDifficultyRating: start: ooo`);
+            log(boolShowDifficultyRating.toString())
+                let filteredArrayWithAssignments = arrayWithAssignments.map(assignment => {
+                    // let copiedAssignment = JSON.parse(JSON.stringify(assignment));
+                    let {fun, ...assignmentObjectWithoutPropertyDifficulty} = assignment;
+                    // code works with 'fun' as work-around/ 'proxy' for 'difficult'. 
+                    // 2do  later: issue not on page Students Overview. Figure out why.
+                    if (boolShowDifficultyRating) {
+                        return assignment
+                    } 
+                    return assignmentObjectWithoutPropertyDifficulty
+                });
+            log(`hier:`)
+            log(filteredArrayWithAssignments)
+            return filteredArrayWithAssignments;
+        }
+
+        const filterByFunRating = (arrayWithAssignments, boolShowDifficultyRating) => {
+            log(`---------------------------------------`);
+            log(`fn filterByFunRating: start: ppp`);
+            log(`arrayWithAssignments:`);
+            log(arrayWithAssignments);
+            log(boolShowDifficultyRating.toString())
+                let filteredArrayWithAssignments = arrayWithAssignments.map(assignment => {
+                    // let copiedAssignment = JSON.parse(JSON.stringify(assignment));
+                    let {difficulty, ...assignmentObjectWithoutPropertyDifficulty} = assignment; 
+                    // same anomaly as in fn filterByDifficultyRating above.
+                    if (boolShowDifficultyRating) {
+                        return assignment
+                    } 
+                    return assignmentObjectWithoutPropertyDifficulty
+                });
+
+            return filteredArrayWithAssignments;
+        }
+
+        const sortAssignments = (clients, sortCriteriaFromSelectboxAsSpaceSeparatedString) => {
+            // log(`inside fn sortAssignments: `)
+            // log(clients)
+            // log(sortCriteriaFromSelectboxAsSpaceSeparatedString)
+            if (!sortCriteriaFromSelectboxAsSpaceSeparatedString) {
+                return clients;
+            }  
+            let sortCriteriaFromSelectboxAsArray = sortCriteriaFromSelectboxAsSpaceSeparatedString.split(' ');
+            // log(sortCriteriaFromSelectboxAsArray)
+            let personObjectKey = sortCriteriaFromSelectboxAsArray[0];
+            // log(`personObjectKey: `)
+            // log(personObjectKey)
+            // log(`isAscending: `)
+            let isAscending = sortCriteriaFromSelectboxAsArray[1] === "ascending" ? true : false;
+            // log(isAscending);
+
+            const lookupTable = {
+                assignmentIdShort: 'assignmentIdShort',
+                difficulty: 'difficulty',
+                fun: 'fun'
+            };
+
+            const sortProperty = lookupTable[personObjectKey]; 
+            let sortedPersons;
+            if (!isAscending && (sortProperty === "difficulty" ))  {
                 sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
                 return sortedPersons.reverse();
-        } else {
-            console.error(`component DashboardOverview: not possible to sort with datatype ${typeof(sortProperty)}. Please investigate. `)
-        }
-    };
-
-    const filterByOneOrMoreAssignments = (arrayWithAssignments, assignmentsToFilterWith ) => {
-        log(`fn filterByOneOrMoreAssignments: start: qqq`);
-        log(assignmentsToFilterWith);
-
-        let arrayFilteredOnAllCriteria = [];              
-        if (assignmentsToFilterWith[0] === "" ) {
-            return arrayWithAssignments;
-        }  else {
-            let copyOfFilteredData = [...arrayWithAssignments];
-            let arrayFilteredOnOneCriterium;
-            
-            for (let filtercriterium of assignmentsToFilterWith) {
-                arrayFilteredOnOneCriterium = copyOfFilteredData.filter(
-                    (personObject) =>           
-                    personObject.assignmentIdShort.indexOf(filtercriterium) !== -1 
-                );
-                arrayFilteredOnAllCriteria.push(...arrayFilteredOnOneCriterium)
+                // I choose 'en' as  the unicodeLanguage.
+                // unicode allows user to enter any kind of character.
+            } else if (isAscending && (sortProperty === "difficulty" ))  {
+                sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
+                return sortedPersons;
+            } else if (isAscending && (sortProperty === "fun" )) {
+                sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
+                return sortedPersons;
+            } else if (!isAscending && (sortProperty === "fun")) {
+                    sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
+                    return sortedPersons.reverse();
+            } else {
+                console.error(`component DashboardOverview: not possible to sort with datatype ${typeof(sortProperty)}. Please investigate. `)
             }
-            return arrayFilteredOnAllCriteria;
-        } 
-    }
+        };
 
-  
-  
-    useEffect(() => {
-            let pipelineData = filterByDifficultyRating(arrayWithAssignmentObjects, boolShowDifficultyRating);
-            pipelineData = filterByFunRating(pipelineData, boolShowFunRating);
-            pipelineData = sortAssignments(pipelineData, assignmentObjectKeyToSortArrayWithAssignments);
-            // pipelineData = filterByOneOrMoreAssignments(pipelineData, assignmentsToFilterWith );
-            setDataToRenderFromUseEffectPipeline(pipelineData);
-        }, 
-        [arrayWithAssignmentObjects, boolShowDifficultyRating, boolShowFunRating, assignmentObjectKeyToSortArrayWithAssignments ]
-    );
+        const filterByOneOrMoreAssignments = (arrayWithAssignments, assignmentsToFilterWith ) => {
+            log(`fn filterByOneOrMoreAssignments: start: qqq`);
+            log(assignmentsToFilterWith);
 
+            let arrayFilteredOnAllCriteria = [];              
+            if (assignmentsToFilterWith[0] === "" ) {
+                return arrayWithAssignments;
+            }  else {
+                let copyOfFilteredData = [...arrayWithAssignments];
+                let arrayFilteredOnOneCriterium;
+                
+                for (let filtercriterium of assignmentsToFilterWith) {
+                    arrayFilteredOnOneCriterium = copyOfFilteredData.filter(
+                        (personObject) =>           
+                        personObject.assignmentIdShort.indexOf(filtercriterium) !== -1 
+                    );
+                    arrayFilteredOnAllCriteria.push(...arrayFilteredOnOneCriterium)
+                }
+                return arrayFilteredOnAllCriteria;
+            } 
+        }
 
+        useEffect(() => {
+                let pipelineData = filterByDifficultyRating(arrayWithAssignmentObjects, boolShowDifficultyRating);
+                pipelineData = filterByFunRating(pipelineData, boolShowFunRating);
+                pipelineData = sortAssignments(pipelineData, assignmentObjectKeyToSortArrayWithAssignments);
+                // pipelineData = filterByOneOrMoreAssignments(pipelineData, assignmentsToFilterWith );
+                setDataToRenderFromUseEffectPipeline(pipelineData);
+            }, 
+            [arrayWithAssignmentObjects, assignmentObjectKeyToSortArrayWithAssignments, boolShowDifficultyRating, boolShowFunRating  ]
+        );
+// part 2: filter-and-sort-comp: business logic: END
 
-    // part 2: filter-and-sort-comp: business logic: end
+// part 3: victory-brush-and-zoom: business logic: START
+        const [zoomDomain, setZoomDomain] = useState({x: [0, 10], y: [0, 5]}); // nr of assignments to display when you open the page.
+        // 'zoomDomain' more info: https://formidable.com/open-source/victory/docs/victory-zoom-container#zoomdomain
+// part 3: victory-brush-and-zoom: business logic: END
 
-
-
-
-
-    const [zoomDomain, setZoomDomain] = useState({x: [0, 10], y: [0, 5]}); // nr of assignments to display when you open the page.
-    // 'zoomDomain' more info: https://formidable.com/open-source/victory/docs/victory-zoom-container#zoomdomain
-
-
-
-
+// part 4: filter-and-sort-comp: dumb component: START      
   return (
     <>
 
 <>
     <Container> 
         <ClientListStyled>
-            <Intro>Dashboard Overview</Intro>
+            <Intro>Assignments Overview</Intro>
             <FormControlArea>
                 <Section1>
                 <StyledCheckbox>
@@ -348,11 +329,9 @@ const DashboardOverview = () => {
     </Container>
     </>
 
-
-
-
-
-
+     
+{/* part 4: filter-and-sort-comp: dumb component: END   */}
+{/* part 5: victory-brush-and-zoom: dumb component: START */}
 
         <VictoryChart 
             theme={wincTheme} 
@@ -621,8 +600,9 @@ const DashboardOverview = () => {
             }}
         />
         </VictoryChart>
+{/* part 5: victory-brush-and-zoom: dumb component: END */}        
     </>
   )
 }
 
-export default DashboardOverview
+export default AssignmentsOverview

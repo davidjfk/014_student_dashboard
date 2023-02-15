@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef  } from 'react';
+import React, { useState, useEffect, useRef, useMemo  } from 'react';
 import { useSelector } from "react-redux";
 
 // start of imports for filter-and-sort-comp:
@@ -40,7 +40,7 @@ import {
 import {wincTheme} from "../styles/wincTheme";
 import { StyledCheckbox } from '../styles/Checkbox.styled';
 
-const SortStudentsByAverageGrades = () => {
+const StudentsOverview = () => {
 
     // part 1: ETL the data: start
         const { studentsMockData } = useSelector((state) => state.studentsMockdata);
@@ -52,15 +52,20 @@ const SortStudentsByAverageGrades = () => {
         // log(`listOfUniqueAssignmentIds: `)
         // log(listOfUniqueAssignmentIds);
 
-        const arrayWithAssignmentObjects = createArrayWithAssignmentObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
+        let arrayWithAssignmentObjects = useMemo(() => { 
+            return createArrayWithAssignmentObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds)}, 
+            [studentsMockData]
+        );
+
+        // const arrayWithAssignmentObjects = createArrayWithAssignmentObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, listOfUniqueAssignmentIds);
         // log(`arrayWithAssignmentObjects: `)
         // log(arrayWithAssignmentObjects);  
+
 
         // let assignmentId = "SCRUM";
         // let averageGradeDifficulty = calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentsMockData, assignmentId);
         // log(`averageGradeDifficulty: `)
         // log(averageGradeDifficulty);
-
 
 
         const listOfUniqueStudentNames = createArrayWithUniqueValues(studentsMockData, "studentName");
@@ -71,13 +76,10 @@ const SortStudentsByAverageGrades = () => {
         const arrayWithUniqueStudentObjects = createArrayWithStudentObjects(createStudentObjectForEachStudentId, studentsMockData, listOfUniqueStudentNames);
         // log(`comp students overview: arrayWithUniqueStudentObjects: `)
         // log(arrayWithUniqueStudentObjects);  
-
-
     // part 1: ETL the data: END
 
 
     // part 2: filter-and-sort-comp: business logic: start
-
     const [assignmentObjectKeyToSortArrayWithAssignments, setAssignmentObjectKeyToSortArrayWithAssignments] = useState('');
     const [boolShowDifficultyRating, setBoolShowDifficultyRating] = useState(true);
     const [boolShowFunRating, setBoolShowFunRating] = useState(true);
@@ -262,20 +264,24 @@ const SortStudentsByAverageGrades = () => {
             pipelineData = sortStudents(pipelineData, assignmentObjectKeyToSortArrayWithAssignments);
             setDataToRenderFromUseEffectPipeline(pipelineData);
         }, 
-        [boolShowDifficultyRating, boolShowFunRating, assignmentObjectKeyToSortArrayWithAssignments, studentsFromCheckBox ]
+        [arrayWithAssignmentObjects, boolShowDifficultyRating, boolShowFunRating, assignmentObjectKeyToSortArrayWithAssignments, studentsFromCheckBox ]
     );
 
 
 
-    // part 2: filter-and-sort-comp: business logic: end
+// part 2: filter-and-sort-comp: business logic: end
 
 
+// part 3: victory-brush-and-zoom: business logic: START
+    //not applicable
+// part 3: victory-brush-and-zoom: business logic: END
 
+// part 4: filter-and-sort-comp: dumb component: START 
   return (
     <>
     <Container> 
         <ClientListStyled>
-            <Intro>Dashboard Overview Students</Intro>
+            <Intro>Dashboard Students Overview </Intro>
             <FormControlArea>
                 <Section1>
                 {/* <StyledCheckbox>
@@ -408,17 +414,8 @@ const SortStudentsByAverageGrades = () => {
     </Container>
 
 
-
-
-
-
-
-
-
-
-
-
-
+{/* part 4: filter-and-sort-comp: dumb component: END   */}
+{/* part 5: victory-brush-and-zoom: dumb component: START */}
 
 
         <VictoryChart 
@@ -581,8 +578,9 @@ const SortStudentsByAverageGrades = () => {
                 }}
             />
           </VictoryChart>
+{/* part 5: victory-brush-and-zoom: dumb component: END */}  
     </>
   )
 }
 
-export default SortStudentsByAverageGrades
+export default StudentsOverview

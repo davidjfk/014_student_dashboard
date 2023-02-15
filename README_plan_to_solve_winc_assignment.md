@@ -77,7 +77,7 @@ Creating routing for branch 03_student_pages_with_separate_routing_for_each_stud
 
 
 
-# branch_02_dashboard_overview
+# branch_02_assignments_overview
 
 REQUIREMENTS: 
     Your WebApplication must display the following
@@ -201,7 +201,7 @@ DESIGN:
     STEP3: calculate correlation coefficient for both scatterplots and analyse/ interpret the result. 
     STEP4: style the 2 scatterplots. 
 
-# branch_05_line_chart_as_slicing_and_dicing_option_3
+# branch_05_linechart_as_slicing_and_dicing_option_3
         
         1.  slicing and dicing option 3: (order of slicing-and-dicing options 3, 1 then 2 is deliberate)
             dumb component: as a user, I want to see a line-chart representation of my data showing the average grade for "fun" and the average grade for "difficult".
@@ -216,7 +216,7 @@ DESIGN:
             The linechart has its own route in the navbar.  
 
 
-# branch_06_dashboard_overview_with_slicing_and_dicing_options_1_and_2_and_bonus_requirements
+# branch_06_assignments_overview_with_slicing_and_dicing_options_1_and_2_and_bonus_requirements
         (continuation of the code from branch_02_dashboard_overview)
 
         5. slicing and dicing option 1: 
@@ -247,7 +247,7 @@ DESIGN:
             1. victory has in-built prop to sort. See victory-site --> Documentation --> Common Props --> 'sortKey' combined with 'sortOrder'.
 
 
-# branch_07_student_pages_with_slicing_and_dicing_options_1_and_2_and_bonus_requirements
+# branch_07_students_overview_with_slicing_and_dicing_options_1_and_2_and_bonus_requirements
         (continuation of the code from branch_03_student_pages)
 
         4. slicing and dicing option 1: 

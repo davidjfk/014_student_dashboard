@@ -88,8 +88,9 @@
     });
 
     //1of3: 
-    export const createArrayWithAssignmentObjects = (createAssignmentObjectForEachAssignmentId, studentsMockData, arrayWithPrimitiveValues) =>
-    arrayWithPrimitiveValues.map(primitiveValue => createAssignmentObjectForEachAssignmentId(studentsMockData, primitiveValue));
+        export const createArrayWithAssignmentObjects =  (createAssignmentObjectForEachAssignmentId, studentsMockData,  arrayWithPrimitiveValues) =>
+        arrayWithPrimitiveValues.map(primitiveValue => createAssignmentObjectForEachAssignmentId(studentsMockData, primitiveValue));
+
 // end of fns Student Dashboard and student-pages.
 
 
