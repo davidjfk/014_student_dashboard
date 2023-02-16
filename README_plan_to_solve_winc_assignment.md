@@ -276,8 +276,56 @@ DESIGN:
                 can interact. 
                 Remark: 'nr of students? can vary in the dashboard_overview, but on the StudentPages only 1 student can be selected at a time !
 
+        7. sort_students_by_average_grades 
 
-        7. bonus: user profiles: 
+            ANALYSIS:
+                requirement: "sort the students by average grades (high to low or low to high)."
+
+                scope: you need more than 1 student for this --> cannot use a selectbox here. You need a separate chart here: reason: whereas on the 
+                'Dashboard Overview' (branch_02) there are 56 points (1 for each assignment) on the x-axis, this time (on branch_06) there
+                will be 10 points (1 for each student) on the x-axis.
+
+                x-axis: 10 columns. Each column is 1 student. (so the x-axis is different than that of the previous assignments !!!)
+                y-axis: average grade of a student for all 56 assignments. (So) column height of a marker on the barchart indicates the average grade for all 56 assignments of 1 student.
+
+                Add a checkbox:
+                unchecked === grades from low to high (from left to right)
+                checked === grades from high to low (from right to left)
+
+                On main nav bar add link to separate page (with its own comp) on which to implement branch_10_sort_students_by_average_grades. 
+
+                'average' can be 1 out of 2 things: 
+                a) fun per assignment for all 56 students combined.  
+                b) difficult per assignment for all 56 students combined.  
+                --> "fun + difficult" combined per assignment for all 56 assignments per student combined would be weird: 
+                    adding "fun + difficult" has no semantic meaning.
+
+            DESIGN:
+                I need combi of smart component and dumb compoonent to implement this:
+
+                Implementation order: 1 to 6. 
+                So adding the sort-functionality will be the FINAL step. First connect the transformed data to the dumb components. 
+
+                1. sort students by average grades
+                    smart component:transform data and feed it into the dumb components as props-object. 
+
+                2. sort students by average grades
+                    dumb component: 
+                    10 students will populate the x-axis, instead of 56 assignments. 
+                    The y-axis -as a result of this - will contain 'average grade per student', instead of 'average grade per assignment'. 
+                    So I need a new - read: modified - victory chart 'M' to implement this. 
+                    Semantically, 'M' is different from the other victory charts, so 'M' gets its own link and route in the navbar.  
+                    Implement 'M' as barchart and linechart, refactor from assignment 'Dashboard Overview'.
+
+                3. sort students by average grades
+                    smart component with business logic to implement "sort the students by average grades (high to low or low to high)."
+                    dumb component with selectbox with 3 options: 'no sort (default option)', 'sort (low-high)', 'sort (high-low)'. (no requirement about 
+                    which form control to use).
+                4. (just for fun): filter (in or out) 1, a few or all assignments. Use pipeline (see my Winc-dentist-assignment) to combine
+                    sorting and filtering.  
+
+
+        8. bonus: user profiles: 
             Save  the data locally in a json file.
             There will be 2 json-files:
                 1 with data about 'fun' and 'difficulty' for each assignment of each student.
@@ -295,7 +343,23 @@ DESIGN:
                 email address
                 phote from url
 
-# branch_08_table_view
+
+
+# branch 08_scatterplot_with_correlation_coefficients_and_outliers
+    End point of 'branch_02_scatterplot(...)' : inside the scatterplot the assignments and the students have been 'scatterplotted' on the dimensions 'difficult rating' and 'fun rating'.
+
+    1. for 'assignments' calculate correlation coefficient.
+    2. automatically analyse the value of the coefficient.
+    3. for 'students' calculate correlation coefficient.
+    4. automatically analyse the value of the coefficient.
+    5. calculate outliers.
+    6. if there are outliers (in branch_02_scatterplot(...) visual inspection of scatterplot has resulted in 1 student as an outlier
+       and possibly 1 or 2 assignments.)
+
+
+
+
+# branch_09_table_view
 (bonus)
 
 ANALYSIS:
@@ -347,68 +411,6 @@ DESIGN:
         design: for each of the 4 columns in the selectbox 3 options: 'no sort (default option)', 'sort (low-high)', 'sort (high-low)'.
         So 12 selectbox-options in total.            
 
-
-
-# branch_09_sort_students_by_average_grades
-
-ANALYSIS:
-    requirement: "sort the students by average grades (high to low or low to high)."
-
-    scope: you need more than 1 student for this --> cannot use a selectbox here. You need a separate chart here: reason: whereas on the 
-    'Dashboard Overview' (branch_02) there are 56 points (1 for each assignment) on the x-axis, this time (on branch_06) there
-    will be 10 points (1 for each student) on the x-axis.
-
-    x-axis: 10 columns. Each column is 1 student. (so the x-axis is different than that of the previous assignments !!!)
-    y-axis: average grade of a student for all 56 assignments. (So) column height of a marker on the barchart indicates the average grade for all 56 assignments of 1 student.
-
-    Add a checkbox:
-    unchecked === grades from low to high (from left to right)
-    checked === grades from high to low (from right to left)
-
-    On main nav bar add link to separate page (with its own comp) on which to implement branch_10_sort_students_by_average_grades. 
-
-    'average' can be 1 out of 2 things: 
-    a) fun per assignment for all 56 students combined.  
-    b) difficult per assignment for all 56 students combined.  
-    --> "fun + difficult" combined per assignment for all 56 assignments per student combined would be weird: 
-        adding "fun + difficult" has no semantic meaning.
-
-DESIGN:
-    I need combi of smart component and dumb compoonent to implement this:
-
-    Implementation order: 1 to 6. 
-    So adding the sort-functionality will be the FINAL step. First connect the transformed data to the dumb components. 
-
-    1. sort students by average grades
-        smart component:transform data and feed it into the dumb components as props-object. 
-
-    2. sort students by average grades
-        dumb component: 
-        10 students will populate the x-axis, instead of 56 assignments. 
-        The y-axis -as a result of this - will contain 'average grade per student', instead of 'average grade per assignment'. 
-        So I need a new - read: modified - victory chart 'M' to implement this. 
-        Semantically, 'M' is different from the other victory charts, so 'M' gets its own link and route in the navbar.  
-        Implement 'M' as barchart and linechart, refactor from assignment 'Dashboard Overview'.
-
-    3. sort students by average grades
-        smart component with business logic to implement "sort the students by average grades (high to low or low to high)."
-        dumb component with selectbox with 3 options: 'no sort (default option)', 'sort (low-high)', 'sort (high-low)'. (no requirement about 
-        which form control to use).
-    4. (just for fun): filter (in or out) 1, a few or all assignments. Use pipeline (see my Winc-dentist-assignment) to combine
-        sorting and filtering.  
-
-
-# branch 10_scatterplot_with_correlation_coefficients_and_outliers
-
-    End point of 'branch_02_scatterplot(...)' : inside the scatterplot the assignments and the students have been 'scatterplotted' on the dimensions 'difficult rating' and 'fun rating'.
-
-    1. for 'assignments' calculate correlation coefficient.
-    2. automatically analyse the value of the coefficient.
-    3. for 'students' calculate correlation coefficient.
-    4. automatically analyse the value of the coefficient.
-    5. calculate outliers.
-    6. if there are outliers (in branch_02_scatterplot(...) visual inspection of scatterplot has resulted in 1 student as an outlier
-       and possibly 1 or 2 assignments.)
 
 
 
