@@ -54,6 +54,49 @@
         return averageFunRoundedToOneDecimal;
     }
 
+    export const correlationCoefficientBetween2Arrays = (X, Y) => {
+        /*
+            X = array1
+            Y = array2
+            source: https://www.geeksforgeeks.org/program-find-correlation-coefficient/ 
+            This code is contributed by susmitakundugoaldanga
+            
+            (I have removed 1 parameter from fn-definition)
+        */
+            let sum_X = 0, sum_Y = 0, sum_XY = 0;
+            let squareSum_X = 0, squareSum_Y = 0;
+            let array1Length = X.length;
+            
+            for(let i = 0; i < array1Length; i++)
+            {
+                // Sum of elements of array X.
+                sum_X = sum_X + X[i];
+            
+                // Sum of elements of array Y.
+                sum_Y = sum_Y + Y[i];
+            
+                // Sum of X[i] * Y[i].
+                sum_XY = sum_XY + X[i] * Y[i];
+            
+                // Sum of square of array elements.
+                squareSum_X = squareSum_X + X[i] * X[i];
+                squareSum_Y = squareSum_Y + Y[i] * Y[i];
+            }
+            // Use formula for calculating correlation
+            // coefficient.
+            let correlationBetweenArray1AndArray2 = (array1Length * sum_XY - sum_X * sum_Y)/
+                    (Math.sqrt((array1Length * squareSum_X -
+                            sum_X * sum_X) *
+                                (array1Length * squareSum_Y -
+                            sum_Y * sum_Y)));
+            return correlationBetweenArray1AndArray2;
+        }
+
+    export const createArrayWithPropertyValueFromEachArrayObject = (arrayWithObjects, arrayObjectKey) => {
+        const arrayWithObjectKeysNotCheckedForRedundancy = arrayWithObjects.map(arrayElement => arrayElement[arrayObjectKey]);
+        return arrayWithObjectKeysNotCheckedForRedundancy;
+    }
+
     export const createArrayWithUniqueValues = (arrayWithObjects, arrayObjectKey) => {
         const arrayWithObjectKeysNotCheckedForRedundancy = arrayWithObjects.map(arrayElement => arrayElement[arrayObjectKey]);
         
@@ -61,6 +104,10 @@
         let listOfUniqueArrayElements = removeDuplicates(arrayWithObjectKeysNotCheckedForRedundancy);
         return listOfUniqueArrayElements;
     }
+
+
+
+
 
     //3of3:
     export const makeAssignmentIdShort = (item, idLength) => {
@@ -82,7 +129,7 @@
         difficulty: calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId),
         victoryBrushContainer: calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId),
         fun: calculateAverageForFunForOneAssignmentOfAllStudents(studentMockData, assignmentId),
-        label: `Opdracht: ${ assignmentId
+        label: `Assignment: ${ assignmentId
         }, avg difficultyRating: ${calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, assignmentId).toFixed(1)}, 
         avg enjoymentRating: ${calculateAverageForFunForOneAssignmentOfAllStudents(studentMockData, assignmentId).toFixed(1)}`
     });
@@ -152,7 +199,7 @@
         difficulty: calculateAverageForDifficultyForAllAssignmentsOf1Student(studentMockData, studentName),
         fun: calculateAverageForFunForAllAssignmentsOf1Student(studentMockData, studentName),
         victoryBrushContainer: calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, studentName),
-        label: `Student name: ${ studentName
+        label: `Student: ${ studentName
         }, avg difficultyRating: ${calculateAverageForDifficultyForAllAssignmentsOf1Student(studentMockData, studentName).toFixed(1)}, 
         avg enjoymentRating: ${calculateAverageForFunForAllAssignmentsOf1Student(studentMockData, studentName).toFixed(1)}`
     });
@@ -164,7 +211,46 @@
 // end of fns for scatterplot
 
 
+const getQuantile = (array, quantile) => {
+    // Get the index the quantile is at.
+    let index = quantile / 100.0 * (array.length - 1);
 
+    // Check if it has decimal places.
+    if (index % 1 === 0) {
+        return array[index];
+    } else {
+        // Get the lower index.
+        let lowerIndex = Math.floor(index);
+        // Get the remaining.
+        let remainder = index - lowerIndex;
+        // Add the remaining to the lowerindex value.
+        return array[lowerIndex] + remainder * (array[lowerIndex + 1] - array[lowerIndex]);
+    }
+}
+
+export const filterOutliers = (someArray) => {
+    /*
+        source: https://stackoverflow.com/questions/20811131/javascript-remove-outlier-from-an-array
+        
+        The original code returns the values that are not outliers: "(x <= maxValue) && (x >= minValue)".
+        I have changed the code so that now it returns the outliers instead:
+        ((x) => (x < minValue) || (x > maxValue))
+    */
+    if (someArray.length < 4) {
+        return someArray;
+    }
+
+    let values = someArray.slice().sort((a, b) => a - b); // copy array fast and sort
+
+    let q1 = getQuantile(values, 25);
+    let q3 = getQuantile(values, 75);
+
+    let iqr, maxValue, minValue;
+    iqr = q3 - q1;
+    maxValue = q3 + iqr * 1.5;
+    minValue = q1 - iqr * 1.5;
+    return values.filter((x) => (x < minValue) || (x > maxValue));
+}
 
 
 

@@ -22,15 +22,20 @@ import {BrushAndZoomWithBarChart} from '../brushAndZoomWithBarChart/BrushAndZoom
 import {
     calculateAverageForDifficultyForOneAssignmentOfAllStudents,
     calculateAverageForFunForOneAssignmentOfAllStudents,
+    correlationCoefficientBetween2Arrays,
     createArrayWithAssignmentObjects,
 
     createAssignmentObjectForEachAssignmentId,
+    createArrayWithPropertyValueFromEachArrayObject,
     createArrayWithUniqueValues, 
 
     createStudentObjectForEachStudentId,
     createArrayWithStudentObjects,
+    filterOutliers,
     log } from '../../utils';
 
+import {Container} from '../styles/Container.styled'
+import {ClientListAreaStyled, ClientListStyled, Column, FormControlArea, Headers, Intro, Section1, Section2, Section3} from './ClientList.styled'
 import {wincTheme} from "../styles/wincTheme";
 
 const Scatterplot = () => {
@@ -40,7 +45,7 @@ const Scatterplot = () => {
     log(studentsMockData);
 
     /*
-        scatterplot 1:
+        scatterplot 1: asssignments:
         All assignments (56) on X-axis with average fun-score of 10 students, and on Y-axis assignments (56) with average difficult score of 10 students: so 
         for each assignment you can see "on average" how the perceived fun-score and difficult-score correlate. 
     */
@@ -54,7 +59,7 @@ const Scatterplot = () => {
 
 
     /*
-        scatterplot 2:
+        scatterplot 2: students:
         All students (10) on X-axis with their individual average fun-socre andon Y-axis with their individual average difficult-score: so 
         for each student you can see how the average fun correlates with average diffiicult.
     */
@@ -65,6 +70,60 @@ const Scatterplot = () => {
         const arrayWithUniqueStudentObjects = createArrayWithStudentObjects(createStudentObjectForEachStudentId, studentsMockData, arrayWithUniqueStudents);
         log(`comp scatterplot2: arrayWithUniqueStudentObjects: `)
         log(arrayWithUniqueStudentObjects);  
+
+
+    //  correlation coefficient: assignments:
+    log(`arrayWithAssignmentAverageDifficultyValues:`)
+    let arrayWithAssignmentAverageDifficultyValues = createArrayWithPropertyValueFromEachArrayObject(arrayWithAssignmentObjects, "difficulty");
+    log(arrayWithAssignmentAverageDifficultyValues);
+    
+    log(`arrayWithAssignmentAverageFunValues:`)
+    let arrayWithAssignmentAverageFunValues = createArrayWithPropertyValueFromEachArrayObject(arrayWithAssignmentObjects, "fun");
+    log(arrayWithAssignmentAverageFunValues);
+
+    //  correlation coefficient: students:
+    log(`arrayWithStudentAverageDifficultyValues:`)
+    let arrayWithStudentAverageDifficultyValues = createArrayWithPropertyValueFromEachArrayObject(arrayWithUniqueStudentObjects, "difficulty");
+    log(arrayWithStudentAverageDifficultyValues);
+
+    log(`arrayWithStudentAverageFunValues:`)
+    let arrayWithStudentAverageFunValues = createArrayWithPropertyValueFromEachArrayObject(arrayWithUniqueStudentObjects, "fun");
+    log(arrayWithStudentAverageFunValues);
+
+    let correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudents = correlationCoefficientBetween2Arrays(arrayWithAssignmentAverageDifficultyValues, arrayWithAssignmentAverageFunValues);
+    log(`correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudents:`);
+    log(correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudents);
+    let correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudentsOn2Decimals = parseFloat(correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudents.toFixed(2));
+    log(correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudentsOn2Decimals);
+
+    let correlationBetweenDifficultyAndFunForStudentOfAllAssignments = correlationCoefficientBetween2Arrays(arrayWithStudentAverageDifficultyValues, arrayWithStudentAverageFunValues);
+    log(`correlationBetweenDifficultyAndFunForStudentOfAllAssignments:`);
+    log(correlationBetweenDifficultyAndFunForStudentOfAllAssignments);
+    let correlationBetweenDifficultyAndFunForStudentOfAllAssignmentsOn2Decimals = parseFloat(correlationBetweenDifficultyAndFunForStudentOfAllAssignments.toFixed(2));
+    log(correlationBetweenDifficultyAndFunForStudentOfAllAssignmentsOn2Decimals);
+
+    // check data for outliers:
+    let outliersInarrayWithAssignmentAverageDifficultyValues = filterOutliers(arrayWithAssignmentAverageDifficultyValues);
+    log(`outliersInarrayWithAssignmentAverageDifficultyValues:`);
+    log(outliersInarrayWithAssignmentAverageDifficultyValues);
+    let isOutliersInarrayWithAssignmentAverageDifficultyValues = (outliersInarrayWithAssignmentAverageDifficultyValues.length == 0) ? "no" : "yes, please investigate" ;
+
+    let outliersInarrayWithAssignmentAverageFunValues = filterOutliers(arrayWithAssignmentAverageFunValues);
+    log(`outliersInarrayWithAssignmentAverageFunValues:`);
+    log(outliersInarrayWithAssignmentAverageFunValues);
+    let isOutliersInarrayWithAssignmentAverageFunValues = (outliersInarrayWithAssignmentAverageFunValues.length == 0) ? "no" : "yes, please investigate" ;
+
+    let outliersInarrayWithStudentsAverageDifficultyValues = filterOutliers(arrayWithStudentAverageDifficultyValues);
+    log(`outliersInarrayWithStudentsAverageDifficultyValues:`);
+    log(outliersInarrayWithStudentsAverageDifficultyValues);
+    let isOutliersInArrayWithStudentsAverageDifficultyValues = (outliersInarrayWithStudentsAverageDifficultyValues.length == 0) ? "no" : "yes, please investigate" ;
+
+    let outliersInarrayWithStudentsAverageFunValues = filterOutliers(arrayWithStudentAverageFunValues);
+    log(`outliersInarrayWithStudentsAverageFunValues:`);
+    log(outliersInarrayWithStudentsAverageFunValues);
+    let isOutliersInarrayWithStudentsAverageFunValues = (outliersInarrayWithStudentsAverageFunValues.length == 0) ? "no" : `yes, please investigate: ${outliersInarrayWithStudentsAverageDifficultyValues}` ;
+    // log(isOutliersInarrayWithStudentsAverageFunValues)
+
 // part 1: ETL the data: END 
 
 // part 2: filter-and-sort-comp: business logic: START
@@ -78,55 +137,36 @@ const Scatterplot = () => {
 // part 4: scatterplot: dumb component: START      
     return (
     <>
-        <h2> bonus: scatterplot </h2>
-        {/* <VictoryChart
-            theme={wincTheme}
-            domain={{ x: [0, 10], y: [0, 10] }}
-        >
-            <VictoryScatter 
-                // rest of styling in file wincTheme.js
-                style={{ 
-                    data: { 
-                        fill: "#c43a31", // "#455A64",  // studa: 2do: change color
-                        opacity: 1,
-                        stroke: "transparent",
-                        strokeWidth: 0                         
-                    },
-                    labels: {
-                        fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
-                        fontSize: 12,
-                        letterSpacing: "normal",
-                        padding: 8,
-                        fill: "#455A64",
-                        stroke: "transparent",
-                        strokeWidth: 0
-                      }                    
-                }} 
-                data={[
-                { x: 1, y: 2 },
-                { x: 2, y: 3 },
-                { x: 3, y: 5 },
-                { x: 4, y: 4 },
-                { x: 5, y: 7 }
-                ]}
-                // labels={{
-                //     fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
-                //     fontSize: 8,
-                //     letterSpacing: "normal",
-                //     padding: 8,
-                //     fill: "#455A64",
-                //     stroke: "transparent",
-                //     strokeWidth: 0
-                // }}
-                domainPadding={{x: [0, -100], y: [0, -100]}}
-                size = {4} // works, ok
-                width = {550}
-                height = {350}
-                padding = {50}
-            />
-        
-        </VictoryChart> */}
 
+{/* part 4: student profile: dumb component: START  */}
+<Container> 
+        <ClientListStyled>
+            <Intro>scatter plot of assignments (blue) and students (yellow) </Intro>
+            <FormControlArea>            
+                <Section1>
+                    <div>Assignments: </div>
+                    <div>correlation coefficient between difficulty and fun:</div>
+                    <div>{correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudentsOn2Decimals}</div>
+                </Section1>
+                <Section1>
+                    <div>Students: </div>
+                    <div>correlation coefficient between difficulty and fun:</div>
+                    <div>{correlationBetweenDifficultyAndFunForStudentOfAllAssignmentsOn2Decimals}</div>
+                </Section1>
+                <Section1> 
+                    <div>outliers:</div>
+                    <div>Assignments: difficulty: {isOutliersInarrayWithAssignmentAverageDifficultyValues} </div>
+                    <div>Assignments: fun: {isOutliersInarrayWithAssignmentAverageFunValues}</div>
+                    <div>Students: difficulty: {isOutliersInArrayWithStudentsAverageDifficultyValues} </div>
+                    <div>Students: fun: {isOutliersInarrayWithStudentsAverageFunValues} </div>
+                </Section1> 
+            </FormControlArea>
+            <Headers>
+
+            </Headers>
+        </ClientListStyled>  
+    </Container>
+{/* part 4: student profile: dumb component: START   */}
 
     <VictoryChart 
             theme={wincTheme} 
@@ -166,7 +206,7 @@ const Scatterplot = () => {
                         }
                     }}            
             >
-                {/* bar 1of2: */}
+                {/* bar 1of2: assignments */}
                 <VictoryScatter 
                     // style={{ data: { fill: "purple" } }} // chart responds to change
                     // height={100}
@@ -202,7 +242,7 @@ const Scatterplot = () => {
                         avg => avg.difficulty
                         )}
                 />
-                {/* bar 2of2: */}
+                {/* bar 2of2: students */}
                 <VictoryScatter 
                     size={2}
                     style = {{
