@@ -96,6 +96,10 @@ const StudentsOverview = () => {
     const [assignmentsToFilterWith, setAssignmentsToFilterWith] = useState([""]);
     const [arrayWithFilteredStudentObjects, setDataToRenderFromUseEffectPipeline] = useState([]);
 
+    log(`arrayWithFilteredStudentObjects: `);
+    log(arrayWithFilteredStudentObjects);
+
+
     log(`studentsFromCheckbox:`);
     log(studentsFromCheckBox);
     log(`studentsFromSelectBox:`);
@@ -130,7 +134,6 @@ const StudentsOverview = () => {
     };
 
  
-
     const handleChangeBoolDifficultyRating = () => {
       setBoolShowDifficultyRating(!boolShowDifficultyRating);
     };
@@ -156,9 +159,7 @@ const StudentsOverview = () => {
         log(arrayWithStudents);
         log(boolShowDifficultyRating.toString())
             let filteredArrayWithAssignments = arrayWithStudents.map(assignment => {
-                const {fun, ...assignmentObjectWithoutPropertyDifficulty} = assignment; 
-                // code works with 'fun' as work-around/ 'proxy' for 'difficult'. 
-                // 2do  later: issue not on page Students Overview. Figure out why.
+                const {difficulty, ...assignmentObjectWithoutPropertyDifficulty} = assignment; 
                 if (boolShowDifficultyRating) {
                     return assignment
                 } 
@@ -176,8 +177,7 @@ const StudentsOverview = () => {
         log(arrayWithStudents);
         log(boolShowDifficultyRating.toString())
             let filteredArrayWithAssignments = arrayWithStudents.map(assignment => {
-                const {difficulty, ...assignmentObjectWithoutPropertyDifficulty} = assignment; 
-                // same anomaly as in fn filterByDifficultyRating above.
+                const {fun, ...assignmentObjectWithoutPropertyDifficulty} = assignment; 
                 if (boolShowDifficultyRating) {
                     return assignment
                 } 
@@ -274,6 +274,7 @@ const StudentsOverview = () => {
 
 // part 3: victory-brush-and-zoom: business logic: START
     //not applicable
+    const [zoomDomain, setZoomDomain] = useState({x: [0, 10], y: [0, 5]}); // nr of students to display when you open the page.
 // part 3: victory-brush-and-zoom: business logic: END
 
 // part 4: filter-and-sort-comp: dumb component: START 
@@ -284,7 +285,7 @@ const StudentsOverview = () => {
             <Intro>Dashboard Students Overview </Intro>
             <FormControlArea>
                 <Section1>
-                {/* <StyledCheckbox>
+                <StyledCheckbox>
                         <Checkbox
                             label="Show difficulty rating"
                             value={boolShowDifficultyRating}
@@ -300,7 +301,7 @@ const StudentsOverview = () => {
                             value={boolShowFunRating}
                             onChange={handleChangeBoolFunRating}
                         />
-                    </StyledCheckbox> */}
+                    </StyledCheckbox>
                 </Section1>
 
                 <Section1> 
@@ -426,7 +427,14 @@ const StudentsOverview = () => {
             //padding has undesirable effect.
         //   style={{ data: { fill: "red" } }}
         //   domain={{ y: [-10, 10] }}
-
+            containerComponent={
+                <VictoryZoomContainer 
+                zoomDimension="x" // ok, see: https://formidable.com/open-source/victory/docs/victory-zoom-container#zoomdomain
+                zoomDomain={zoomDomain}
+                // zoomDomain={{x: [0, 10]}} // in useState-hook above.
+                //   onZoomDomainChange={this.handleZoom.bind(this)}
+                />
+            }
         >
             <VictoryGroup offset={10} 
                     // tickValues={['1.0', '2.0', '3.0', '4.0', '5.0']}
@@ -562,7 +570,7 @@ const StudentsOverview = () => {
                 }}
             />
             <VictoryAxis dependentAxis 
-                label="Rating of assignment difficulty (blue) and fun (yellow)"
+                label="Rating of student difficulty (blue) and fun (yellow)"
                 // tickValues={[1, 2, 3, 4, 5]}
                 style={{
                     tickLabels: {
@@ -579,6 +587,10 @@ const StudentsOverview = () => {
             />
           </VictoryChart>
 {/* part 5: victory-brush-and-zoom: dumb component: END */}  
+
+
+
+
     </>
   )
 }

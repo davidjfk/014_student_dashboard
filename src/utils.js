@@ -151,6 +151,7 @@
         // assignmentIdShort: makeAssignmentIdShort(studentName, 6), // works
         difficulty: calculateAverageForDifficultyForAllAssignmentsOf1Student(studentMockData, studentName),
         fun: calculateAverageForFunForAllAssignmentsOf1Student(studentMockData, studentName),
+        victoryBrushContainer: calculateAverageForDifficultyForOneAssignmentOfAllStudents(studentMockData, studentName),
         label: `Student name: ${ studentName
         }, avg difficultyRating: ${calculateAverageForDifficultyForAllAssignmentsOf1Student(studentMockData, studentName).toFixed(1)}, 
         avg enjoymentRating: ${calculateAverageForFunForAllAssignmentsOf1Student(studentMockData, studentName).toFixed(1)}`

@@ -17,24 +17,28 @@ import {
     VictoryAxis 
 } from "victory";
 
+import { studentUserProfiles } from '../../data/studentUserProfiles';
+
 import { createArrayWithUniqueValues, log } from '../../utils';
 
 import { makeAssignmentIdShort } from '../../utils';
 
+import {Container} from '../styles/Container.styled'
+import {ClientListAreaStyled, ClientListStyled, Column, FormControlArea, Headers, Intro, Section1, Section2, Section3} from './ClientList.styled'
 import {wincTheme} from "../styles/wincTheme";
 
 const Student = (props) => {
 // part 1: ETL the data: START: 
+    // step1: create nested routing:
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);
     let {id} = useParams()
     log(`id:`);
     log(id);
 
-
     let listOfUniqueStudentNames = createArrayWithUniqueValues(studentsMockData, "studentName"); // rename to createArrayWithUniqueStudentNames ??
     log(listOfUniqueStudentNames);
 
-
+    // step2: create data for Victory Brush-and-Zoom:
     let objectKeyToFilter = id;
     let filterStudentObjectWithAssignmentId = student => student.studentName === objectKeyToFilter;
 
@@ -49,7 +53,6 @@ const Student = (props) => {
     let arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId = createArrayWithObjectsFilteredOnObjectKey(filterStudentObjectWithAssignmentId, studentsMockData);
     log(`56 records for each student:`)
     log(arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId)
-
 
     const createallGradesForFunAndDifficultyFor1StudentFor1Student = (allGradesForFunAndDifficultyFor1StudentOfTheSameStudent) =>
         allGradesForFunAndDifficultyFor1StudentOfTheSameStudent.map(assignmentObject => ({ 
@@ -67,10 +70,22 @@ const Student = (props) => {
     let allGradesForFunAndDifficultyFor1Student = createallGradesForFunAndDifficultyFor1StudentFor1Student(arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId)
     log(`allGradesForFunAndDifficultyFor1Student: `)
     log(allGradesForFunAndDifficultyFor1Student);
+
+    // step3: create data for student user profile:
+    log(`studentUserProfiles:`);
+    log(studentUserProfiles);
+    // objectKeyToFilter = id;
+    let studentUserProfileToDisplay = createArrayWithObjectsFilteredOnObjectKey(filterStudentObjectWithAssignmentId, studentUserProfiles);
+    // let studentUserProfileToDisplay = studentUserProfiles.filter(student => student.studentName === "Evelyn");
+    log(`studentUserProfileToDisplay: `);
+    log(studentUserProfileToDisplay[0]);
+    let {lastName, firstName, phone, email, age, studentPhoto} = studentUserProfileToDisplay[0];
+    // log(age) // ok
 // part 1: ETL the data: END: 
 
+
 // part 2: Student Pages: business logic: START
-    // not applicable
+    // see part1.
 // part 2: Student Pages: business logic: START
 
 // part 3: victory-brush-and-zoom: business logic: START
@@ -78,22 +93,51 @@ const Student = (props) => {
     // 'zoomDomain' more info: https://formidable.com/open-source/victory/docs/victory-zoom-container#zoomdomain
 // part 3: victory-brush-and-zoom: business logic: END
 
-// part 4: filter-and-sort-comp: dumb component: START  
-    // not applicable
-// part 4: filter-and-sort-comp: dumb component: START  
 
-{/* part 5: victory-brush-and-zoom: dumb component: START */}
   return (
     <>
-    <div className="studentPage">
-        student page 
-    </div>
-    <div>student name: {id} </div>
+
+{/* part 4: student profile: dumb component: START  */}
+    
+<Container> 
+        <ClientListStyled>
+            <Intro>User Profile of Student: {firstName} {lastName} </Intro>
+            <FormControlArea>
+                <Section1>
+                    {/* <div>{studentPhoto}</div> */}
+                    <img src={studentPhoto} height="80" width="80"/>
+                </Section1>                
+                <Section1>
+                    <div>last name:</div>
+                    <div>{lastName}</div>
+                </Section1>
+                <Section1>
+                    <div>first name:</div>
+                    <div>{firstName}</div>
+                </Section1>
+                <Section1> 
+                    <div>phone number:</div>
+                    <div>{phone}</div>
+                </Section1> 
+                <Section1> 
+                    <div>email:</div>
+                    <div>{email}</div>
+                </Section1> 
+                <Section1> 
+                    <div>age:</div>
+                    <div>{age}</div>
+                </Section1> 
+            </FormControlArea>
+            <Headers>
+
+            </Headers>
+        </ClientListStyled>  
+    </Container>
+{/* part 4: student profile: dumb component: START   */}
+ 
 
 
-
-
-    <>
+{/* part 5: victory-brush-and-zoom: dumb component: START */}
         <VictoryChart 
             theme={wincTheme} 
             width={800} 
@@ -362,10 +406,6 @@ const Student = (props) => {
         />
         </VictoryChart>
 {/* part 5: victory-brush-and-zoom: dumb component: START */}
-    </>
-
-
-
     </>
   )
 }
