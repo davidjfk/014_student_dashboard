@@ -459,7 +459,7 @@ const AssignmentsOverview = () => {
                 // they are placed on the axis
                 // tickValues={[1.0, 2.0, 3, 4, 5]}
                 tickFormat={arrayWithFilteredAssignmentObjects.map(
-                avg => avg.assignmentId 
+                avg => avg.assignmentIdShort 
                 /*
                  pitfall: avg.assignmentId will display long names on x-axis: e.g. actual result:
                  'W3D5 - Project - Todo-List' , instead of the expected result (to save space on x-axis) 'W3D5'.
