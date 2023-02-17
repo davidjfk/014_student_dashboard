@@ -3,29 +3,20 @@ import { useDispatch} from "react-redux";
 import {addStudentsMockdataToReduxToolkit} from '../../redux/studentsMockdataSlice';
 import { csv } from 'd3';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import studentMockData from '../../data/students-mock-data.csv'; // first import, then use inside useEffect. 
-
+import { BrowserRouter as Router, Routes, Route, Link} from "react-router-dom";
+import studentMockData from '../../data/students-mock-data.csv';
 import {log} from  '../../utils';
-
 import AssignmentsOverview from "../assignmentsoverview/AssignmentsOverview.js";
-import BarChart from '../barchart/BarChart';
 import LineChart from "../linechart/LineChart";
 import StudentPages from "../studentpages/StudentPages.js";
-// import Student from "../student/Student";
 import Scatterplot from "../scatterplot/Scatterplot";
 import TableOverview from "../table-overview/TableOverview";
 import SortStudentsByAverageGrades from "../studentsoverview/StudentsOverview";
-
-
 import {AppStyled} from "./App.styled";
 import {NavigationStyled} from "./Navigation.styled";
 import {StyledNavLink} from "./NavLink.styled";
 import {theme} from "../styles/appStyleTheme";
 import {generateRandomPersonId} from '../../utils';
-
-
 
 const updateKeysOfArrayWithStudentObjects = (studentMockData) => {
     const updateKeysOfArrayWithStudentObjects = studentMockData.map(item => {
@@ -48,19 +39,10 @@ function App() {
     useEffect(() => {
       csv(studentMockData).then(data => {
           const studentMockDataWithMoreConciseObjectKeys = updateKeysOfArrayWithStudentObjects(data);
-          // log(studentMockDataWithMoreConciseObjectKeys); 
-          /*
-            log is sync, but csv.then() is ...async. So won't log anything.
-            solution: just to log the  csv, I will use useState-hook.
-          */ 
-          setData(studentMockDataWithMoreConciseObjectKeys); // I do not need useState-hook as intermediate step to move data to Redux-Toolkit. 
+          setData(studentMockDataWithMoreConciseObjectKeys); 
           dispatch(addStudentsMockdataToReduxToolkit(studentMockDataWithMoreConciseObjectKeys));
       }); 
     }, []);
-
-    // log(`csv-data with updated keys, before dispatch to Redux-toolkit slice:`); // (to check intermediate step by working incrementally) (status: ok)
-    // log(data); // remark: works, but only after 2nd render (== first re-render). 
-    // reason: 'data' from useState-hook is sync, but csv.then() is ...async. So during 1st render, useState-hook has not had chance to update yet.
    
     return (
         <>
@@ -88,9 +70,6 @@ function App() {
                     <StyledNavLink>
                         <Link to="/tableOverview">Table Overview</Link>
                     </StyledNavLink>
-                    <StyledNavLink>
-                        <Link to="/barchart">BarChart</Link>
-                    </StyledNavLink>
                     </div>
                     <Routes>
                     <Route path="/" element={<AssignmentsOverview  />} />  
@@ -99,7 +78,6 @@ function App() {
                     <Route path="/linechart" element={<LineChart  />} /> 
                     <Route path="/scatterplot" element={<Scatterplot  />} />  
                     <Route path="/tableOverview" element={<TableOverview  />} /> 
-                    <Route path="/barchart" element={<BarChart  />} /> 
                     <Route path="*" element={<AssignmentsOverview  />} />  
                     </Routes>
 

@@ -409,7 +409,7 @@ DESIGN:
     5. Table View 
         smart component: Add sort by data column. I do this with selectbox (selectbox will be a dumb form-ui-control, connected to this smart component)  
         design: for each of the 4 columns in the selectbox 3 options: 'no sort (default option)', 'sort (low-high)', 'sort (high-low)'.
-        So 12 selectbox-options in total.            
+        So 1 + 4 + 4 = 9 selectbox-options in total.            
 
 
 
