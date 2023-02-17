@@ -1,222 +1,409 @@
-// import React from 'react'
-
-// const TableOverview = () => {
-//   return (
-//     <>
-//         <h2> bonus: Table View </h2>
-
-//     </>
-//   )
-// }
-
-// export default TableOverview
-
-/*
-    page temporarily "hijacked" with basic brush and zoom linechart. 
-*/
-
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, useEffect, useRef} from 'react';
 import { useSelector } from "react-redux";
 
+import { Checkbox } from '../checkbox/Checkbox';
+import {Container} from '../styles/Container.styled'
+import {ClientListAreaStyled, ClientListStyled, Column, FormControlArea, Headers, Intro, Section1, Section2, Section3} from './ClientList.styled'
+import {StyledSelectbox} from '../styles/Selectbox.styled';
+import { StyledSelectboxBig } from '../styles/SelectboxBig.styled';
 import {
     VictoryZoomContainer,
-    VictoryBrushContainer,
     VictoryBar,
     VictoryChart,
     VictoryGroup,
-    VictoryLabel,
-    VictoryLine,
-    VictoryPie,
+    VictoryTooltip,
     VictoryAxis 
 } from "victory";
 
+
 import {createArrayWithUniqueValues, log } from '../../utils';
 
-const LineChart_basic = () => {
+import {wincTheme} from "../styles/wincTheme";
+import { StyledCheckbox } from '../styles/Checkbox.styled';
+
+const StudentsOverview = () => {
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);
-    log('comp DashboardOverview:');
-    log(studentsMockData);
+    const [assignmentObjectKeyToSortArrayWithAssignments, setAssignmentObjectKeyToSortArrayWithAssignments] = useState('');
+    const [boolShowDifficultyRating, setBoolShowDifficultyRating] = useState(true);
+    const [boolShowFunRating, setBoolShowFunRating] = useState(true);
+    const [isHovering, setIsHovering] = useState(false);
+    const [studentsFromCheckBox, setStudentsFromCheckbox] = useState(['Aranka', 'Evelyn', 'Floris', 'Hector', 'Martina', 'Maurits', 'Rahima', 'Sandra', 'Storm', 'Wietske']);
+    const ref = useRef(true); // goal: checkboxes must be checked by default
+    const [assignmentsFromSelectBox, setAssignmentsFromSelectBox] = useState([""]);
+    const [arrayWithFilteredStudentObjects, setDataToRenderFromUseEffectPipeline] = useState([]);
 
-    /*
-        GAMEPLAN: 4a) Create array with unique assignmentIds (e.g. W2D3-1) (should be 56 assignmentIds in this array 
-            in total as string-values). Use fn createArrayWithUniqueValues to create this array.
-    */
     const listOfUniqueAssignmentIds = createArrayWithUniqueValues(studentsMockData, "assignmentId");
-    // log(listOfUniqueAssignmentIds);
+    const listOfUniqueStudentNames = createArrayWithUniqueValues(studentsMockData, "studentName");
+    listOfUniqueStudentNames.sort();
+    log(`arrayWithFilteredStudentObjects: `);
+    log(arrayWithFilteredStudentObjects);
 
+    const handleFilterOneOrMoreAssignmentsViaSelectBox = (event) => {
+        let value = Array.from(
+            event.target.selectedOptions, (option) => option.value
+        )   
+        setAssignmentsFromSelectBox(value);
+    };
 
-
-    const calculateAssignmentAverageDifficultyOfAllStudents = (array, assignmentId) => {
-    
-        const createArrayWithStudentsForAssignmentId = (array, assignmentId) => {
-
-            let filterStudentObjectWithAssignmentId = student => student.assignmentId === assignmentId;
-
-            const filterStudents = (array, filterFunction) => {
-                let filteredArr = array.filter(filterFunction)
-                return filteredArr;
-            }
-        
-            let arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId = filterStudents(array, filterStudentObjectWithAssignmentId )
-            return arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId;
+    const handleFilterOneOrMoreStudentsViaCheckbox = (event) => {
+        const isChecked = event.target.checked;
+        if(isChecked){
+            setStudentsFromCheckbox([...studentsFromCheckBox, event.target.value]);
+        }else{
+            let studentsCopy = [...studentsFromCheckBox]
+            let index = studentsCopy.indexOf(event.target.value);
+            studentsCopy.splice(index, 1);
+            setStudentsFromCheckbox(studentsCopy);
         }
+    };
 
-        let arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId = createArrayWithStudentsForAssignmentId(array, assignmentId);
-        // log(arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId);
-
-    
-        const calculateAverageForArrayObjectKey = (array, objKey) => array
-            .reduce((accumulator, variableDoingNothing, index, array) => accumulator + parseInt(array[index][objKey]), 0) / array.length;
-
-        let averageDifficulty = calculateAverageForArrayObjectKey(arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId, "difficulty");
-        let averageDifficultyRoundedToOneDecimal = parseFloat(averageDifficulty.toFixed(1));
-        return averageDifficultyRoundedToOneDecimal;
-    }
-
-
-
-    const calculateAssignmentAverageFunLevelOfAllStudents = (array, assignmentId) => {
-    
-        const createArrayWithStudentsForAssignmentId = (array, assignmentId) => {
-
-            let filterStudentObjectWithAssignmentId = student => student.assignmentId === assignmentId;
-
-            const filterStudents = (array, filterFunction) => {
-                let filteredArr = array.filter(filterFunction)
-                return filteredArr;
-            }
-        
-            let arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId = filterStudents(array, filterStudentObjectWithAssignmentId )
-            return arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId;
-        }
-
-        let arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId = createArrayWithStudentsForAssignmentId(array, assignmentId);
-        // log(arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId);
-
-    
-        const calculateAverageForArrayObjectKey = (array, objKey) => array
-            .reduce((accumulator, variableDoingNothing, index, array) => accumulator + parseInt(array[index][objKey]), 0) / array.length;
-
-        let averageFun = calculateAverageForArrayObjectKey(arrayWithStudentObjectsFilteredOnOneSpecificAssignmentId, "fun");
-        let averageFunRoundedToOneDecimal = parseFloat(averageFun.toFixed(1));
-        return averageFunRoundedToOneDecimal;
-    }
-
-
-    
-    /*
-        GAME PLAN: 4b) Create array with 56 assignment-objects. Each object contains 3 keys: 
-            - key assignmentId with value (e.g. W2D3-1)
-            - key difficult with value 'empty array'. 
-            - key fun with value 'empty array'. 
-    */
-    const createAssignmentObjectForEachAssignmentId = (studentMockData, assignmentId) => ({
-        assignmentId,
-        difficulty: calculateAssignmentAverageDifficultyOfAllStudents(studentMockData, assignmentId),
-        fun: calculateAssignmentAverageFunLevelOfAllStudents(studentMockData, assignmentId),
-      });
-      
-    const createArrayWithObjects = (studentsMockData, arrayWithPrimitiveValues) =>
-        arrayWithPrimitiveValues.map(primitiveValue => createAssignmentObjectForEachAssignmentId(studentsMockData, primitiveValue));
-    
-    const arrayWithStudentObjects = createArrayWithObjects(studentsMockData, listOfUniqueAssignmentIds);
-    log(`arrayWithStudentObjects: `)
-    log(arrayWithStudentObjects);  
-
+    const handleChangeBoolDifficultyRating = () => {
+      setBoolShowDifficultyRating(!boolShowDifficultyRating);
+    };
   
-    /*
-    GAME PLAN: 4C) 
-        For key difficult, value is average of all 10 students for this assignmentId. Each student has 1 opinion about each assignment, given 
-        that there are 10 students). For this, filter datastructure 'A' (see point a above) on object-key 'assignmentId' 
-        (into a new array) AND then apply reduce fn on object-key 'difficult' to create average (1 decimal).
-        This has resulted in fn calculateAverageAssignmentDifficultyOfAllStudents above. 
-    */  
+    const handleChangeBoolFunRating = () => {
+      setBoolShowFunRating(!boolShowFunRating);
+    };
 
-            /*
-    GAME PLAN: 4D) 
-        For key fun, value is average of all 10 students for this assignmentId. Each student has 1 opinion about each assignment, given 
-        that there are 10 students). For this, filter datastructure 'A' (see point a above) on object-key 'assignmentId' 
-        (into a new array) AND then apply reduce fn on object-key 'fun' to create average (1 decimal).
-        This has resulted in fn calculateAverageAssignmentFunOfAllStudents above. 
-    */  
+    const handleMouseOver = () => {
+        setIsHovering(true);
+      };
+    
+    const handleMouseOut = () => {
+    setIsHovering(false);
+    };
 
-    const [zoomDomain, setZoomDomain] = useState({ x: [new Date(1990, 1, 1), new Date(2009, 1, 1)] });
+    const filterByDifficultyRating = (arrayWithStudents, boolShowDifficultyRating) => {
+            let filteredArrayWithAssignments = arrayWithStudents.map(assignment => {
+                const {difficulty, ...assignmentObjectWithoutPropertyDifficulty} = assignment; 
+                if (boolShowDifficultyRating) {
+                    return assignment
+                } 
+                return assignmentObjectWithoutPropertyDifficulty
+            });
+        return filteredArrayWithAssignments;
+    }
+
+    const filterByFunRating = (arrayWithStudents, boolShowDifficultyRating) => {
+            let filteredArrayWithAssignments = arrayWithStudents.map(assignment => {
+                const {fun, ...assignmentObjectWithoutPropertyDifficulty} = assignment; 
+                if (boolShowDifficultyRating) {
+                    return assignment
+                } 
+                return assignmentObjectWithoutPropertyDifficulty
+            });
+
+        return filteredArrayWithAssignments;
+    }
+
+    const sortStudents = (clients, sortCriteriaFromSelectboxAsSpaceSeparatedString) => {
+        if (!sortCriteriaFromSelectboxAsSpaceSeparatedString) {
+            return clients;
+        }  
+        let sortCriteriaFromSelectboxAsArray = sortCriteriaFromSelectboxAsSpaceSeparatedString.split(' ');
+        let personObjectKey = sortCriteriaFromSelectboxAsArray[0];
+        let isAscending = sortCriteriaFromSelectboxAsArray[1] === "ascending" ? true : false;
+        const lookupTable = {
+            assignmentIdShort: 'assignmentIdShort',
+            difficulty: 'difficulty',
+            fun: 'fun'
+        };
+        const sortProperty = lookupTable[personObjectKey]; 
+        let sortedPersons;
+        if (!isAscending && (sortProperty === "difficulty" ))  {
+            sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
+            return sortedPersons.reverse();
+        } else if (isAscending && (sortProperty === "difficulty" ))  {
+            sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
+            return sortedPersons;
+        } else if (isAscending && (sortProperty === "fun" )) {
+            sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
+            return sortedPersons;
+        } else if (!isAscending && (sortProperty === "fun")) {
+                sortedPersons = [...clients].sort((person1, person2) => person1[sortProperty] > (person2[sortProperty]) ? 1: -1);
+                return sortedPersons.reverse();
+        } else {
+            console.error(`component DashboardOverview: not possible to sort with datatype ${typeof(sortProperty)}. Please investigate. `)
+        }
+    };
+
+    const filterByOneOrMoreAssignments = (arrayWithStudents, studentsToFilterWith ) => {
+        // I created this fn for winc-dentist-assignment. 
+        let arrayFilteredOnAllCriteria = [];              
+        if (studentsToFilterWith[0] === "" ) {
+            return arrayWithStudents;
+        }  else {
+            let copyOfFilteredData = [...arrayWithStudents];
+            let arrayFilteredOnOneCriterium;
+            
+            for (let filtercriterium of studentsToFilterWith) {
+                arrayFilteredOnOneCriterium = copyOfFilteredData.filter(
+                    (personObject) =>           
+                    personObject.assignmentId.indexOf(filtercriterium) !== -1 //note-to-self: assignmentId is hard-coded.
+                );
+                arrayFilteredOnAllCriteria.push(...arrayFilteredOnOneCriterium)
+            }
+            return arrayFilteredOnAllCriteria;
+        } 
+    }
+
+    const filterByOneOrMoreStudents = (arrayWithStudents, studentsToFilterWith ) => {
+        let arrayFilteredOnAllCriteria = [];              
+        if (studentsToFilterWith[0] === "" ) {
+            return arrayWithStudents;
+        }  else {
+            let copyOfFilteredData = [...arrayWithStudents];
+            let arrayFilteredOnOneCriterium;
+            
+            for (let filtercriterium of studentsToFilterWith) {
+                arrayFilteredOnOneCriterium = copyOfFilteredData.filter(
+                    (personObject) =>           
+                    personObject.studentName.indexOf(filtercriterium) !== -1 //note-to-self: studentName is hard-coded.
+                );
+                arrayFilteredOnAllCriteria.push(...arrayFilteredOnOneCriterium)
+            }
+            return arrayFilteredOnAllCriteria;
+        } 
+    }
  
-    let assignmentId = "SCRUM";
-    let averageGradeDifficulty = calculateAssignmentAverageDifficultyOfAllStudents(studentsMockData, assignmentId);
-    log(`averageGradeDifficulty: `)
-    log(averageGradeDifficulty);
+    useEffect(() => {
+            let pipelineData = filterByDifficultyRating(studentsMockData, boolShowDifficultyRating);
+            pipelineData = filterByFunRating(pipelineData, boolShowFunRating);
+            pipelineData = filterByOneOrMoreStudents(pipelineData, studentsFromCheckBox ); 
+            pipelineData = filterByOneOrMoreAssignments(pipelineData, assignmentsFromSelectBox ); 
+            pipelineData = sortStudents(pipelineData, assignmentObjectKeyToSortArrayWithAssignments);
+            setDataToRenderFromUseEffectPipeline(pipelineData);
+        }, 
+        [boolShowDifficultyRating, boolShowFunRating, assignmentObjectKeyToSortArrayWithAssignments, studentsFromCheckBox, assignmentsFromSelectBox ]
+    );
+
+    const [zoomDomain, setZoomDomain] = useState({x: [0, 10], y: [0, 5]}); 
 
   return (
     <>
+    <Container> 
+        <ClientListStyled>
+            <Intro>Table Overview </Intro>
+            <FormControlArea>
+                <Section1>
+                <StyledCheckbox>
+                        <Checkbox
+                            label="Show difficulty rating"
+                            value={boolShowDifficultyRating}
+                            onChange={handleChangeBoolDifficultyRating}
+                        />
+                    </StyledCheckbox>
 
+                </Section1>
+                <Section1>
+                    <StyledCheckbox>
+                        <Checkbox
+                            label="Show fun rating"
+                            value={boolShowFunRating}
+                            onChange={handleChangeBoolFunRating}
+                        />
+                    </StyledCheckbox>
+                </Section1>
+                <Section1> 
+                    <div>Sort difficulty or fun: </div>
+                    <StyledSelectbox                  
+                        onChange={(e) => setAssignmentObjectKeyToSortArrayWithAssignments(e.target.value)}               
+                    >      
+                        <option value="" >Sort by:</option>
+                        <option value="" >do not sort</option>
+                        <option value="difficulty ascending" >difficulty a-z</option> 
+                        <option value="difficulty descending" >difficulty z-a</option>
+                        <option value="fun ascending" >fun a-z</option>
+                        <option value="fun descending" >fun z-a</option>
+                    </StyledSelectbox>
+                </Section1> 
+                <Section2>
+                    <div className='studentsOverview'>
+                        <form>
+                        <p>Filter students:</p>
+                        {/* 2do later: replace by map-fn. */}
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Aranka"  onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Aranka</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Evelyn" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Evelyn</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Floris"  onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Floris</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Hector" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Hector</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Martina" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Martina</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Maurits" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Maurits</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Rahima" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Rahima</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Sandra" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Sandra</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Storm" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Storm</label><br />
+                        </StyledCheckbox>
+                        <StyledCheckbox>
+                            <input type="checkbox" name="students" value="Wietske" onChange={handleFilterOneOrMoreStudentsViaCheckbox} ref={ref} defaultChecked={true}/>
+                            <label htmlFor="student1"> Wietske</label><br />
+                        </StyledCheckbox>
+                        <br />
+                        </form>
+                    </div>
+                </Section2>
+                <Section3>
+                    <div>
+                    <div>Filter assignments: </div>
+                    <break/>
+                    <StyledSelectboxBig 
+                        multiple={true}
+                        value={assignmentsFromSelectBox}
+                        onChange={(e) => handleFilterOneOrMoreAssignmentsViaSelectBox(e)  }     
+                        onMouseOver={handleMouseOver} 
+                        onMouseOut={handleMouseOut}                 
+                    >    
+                        <option value="" >Filter on assignments:</option>
+                        <option value="" >do not filter</option>  
+                        {listOfUniqueAssignmentIds.map(item => {  
+                            return (<option key={item} value={item}>{item}</option>);
+                        })}
+                    </StyledSelectboxBig>
+                    {isHovering && <h3>Press Ctrl or Shift to select multiple assignments</h3>}
+                    </div>
+                </Section3>
+            </FormControlArea>
+            <Headers>
 
-<div>
-        <VictoryChart width={600} height={470} scale={{ x: "time" }}
-          containerComponent={
-            <VictoryZoomContainer
-              zoomDimension="x"
-              zoomDomain={zoomDomain}
-            //   onZoomDomainChange={this.handleZoom.bind(this)}
-            />
-          }
-        >
-            <VictoryLine
-              style={{
-                data: { stroke: "tomato" }
-              }}
-              data={[
-                { a: new Date(1982, 1, 1), b: 125 },
-                { a: new Date(1987, 1, 1), b: 257 },
-                { a: new Date(1993, 1, 1), b: 345 },
-                { a: new Date(1997, 1, 1), b: 515 },
-                { a: new Date(2001, 1, 1), b: 132 },
-                { a: new Date(2005, 1, 1), b: 305 },
-                { a: new Date(2011, 1, 1), b: 270 },
-                { a: new Date(2015, 1, 1), b: 470 }
-              ]}
-              x="a"
-              y="b"
-            />
-
-          </VictoryChart>
-          <VictoryChart
-            padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
-            width={600} height={100} scale={{ x: "time" }}
+            </Headers>
+        </ClientListStyled>  
+    </Container>
+        <VictoryChart 
+            theme={wincTheme} 
+            width={800} 
+            height={350}    
             containerComponent={
-              <VictoryBrushContainer
-                brushDimension="x"
-                brushDomain={zoomDomain}
-                onBrushDomainChange={setZoomDomain} 
-              />
+                <VictoryZoomContainer 
+                zoomDimension="x" 
+                zoomDomain={zoomDomain}
+                />
             }
-          >
-            <VictoryAxis
-              tickFormat={(x) => new Date(x).getFullYear()}
+        >
+            <VictoryGroup offset={10} 
+                    style = {{
+                        data: {
+                            padding: 10,
+                            strokeWidth: 5 
+                        },
+                        labels: {
+                            fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
+                            fontSize: 8,
+                            letterSpacing: "normal",
+                            padding: 18,
+                            stroke: "transparent",
+                            strokeWidth: 0
+                        }
+                    }}            
+            >
+                <VictoryBar 
+                    groupComponent={<g transform="translate(-1, -2)" />}
+                    barWidth={5}
+                   height={100}
+                    style = {{
+                        data: {
+                            fill: "#D4E7FA", 
+                            padding: 0,
+                            strokeWidth: 5 
+                        }
+                    }}
+                    labelComponent={
+                        <VictoryTooltip   
+                            style={{fontSize: '10px'}}
+                            flyoutWidth={310}
+                            flyoutHeight={60}
+                            cornerRadius={8}
+                            pointerLength={20}
+                            flyoutStyle={{strokeWidth: 1}}  
+                        />
+                    }
+                    data={arrayWithFilteredStudentObjects}
+                    x = "studentName"
+                    y = "difficulty"
+                    tickValues={[1, 2, 3, 4, 5]}
+                    tickFormat={arrayWithFilteredStudentObjects.map(
+                        avg => avg.studentName
+                        )}
+                />
+                <VictoryBar 
+                    groupComponent={<g transform="translate(2, -2)" />}
+                    barWidth={5}
+                    style = {{
+                        data: {
+                            fill: "#FCD808", 
+                            padding: 0,
+                            strokeWidth: 5 
+                        },
+                    }}
+
+                    labelComponent={
+                        <VictoryTooltip 
+                            style={{fontSize: '10px'}}
+                            flyoutWidth={310}
+                            flyoutHeight={60}
+                            cornerRadius={8}
+                            pointerLength={20}
+                            flyoutStyle={{strokeWidth: 1}} 
+                        />
+                    }                    
+                    data={arrayWithFilteredStudentObjects}
+                    x = "studentName"
+                    y = "fun"
+                    tickValues={[1, 2, 3, 4, 5]}
+                    tickFormat={arrayWithFilteredStudentObjects.map(
+                        avg => avg.studentName
+                        )}
+                />   
+            </VictoryGroup>
+            <VictoryAxis 
+                tickFormat={arrayWithFilteredStudentObjects.map(
+                avg => avg.studentName 
+                )}
+                label="Student Names"
+                style={{
+                    tickLabels: {
+                        fontSize: 10,
+                        angle: 0,
+                        padding: 12,
+                      }
+                }}
             />
-            <VictoryLine
-              style={{
-                data: { stroke: "tomato" }
-              }}
-              data={[
-                { key: new Date(1982, 1, 1), b: 125 },
-                { key: new Date(1987, 1, 1), b: 257 },
-                { key: new Date(1993, 1, 1), b: 345 },
-                { key: new Date(1997, 1, 1), b: 515 },
-                { key: new Date(2001, 1, 1), b: 132 },
-                { key: new Date(2005, 1, 1), b: 305 },
-                { key: new Date(2011, 1, 1), b: 270 },
-                { key: new Date(2015, 1, 1), b: 470 }
-              ]}
-              x="key"
-              y="b"
+            <VictoryAxis dependentAxis 
+                label="Rating of student difficulty (blue) and fun (yellow)"
+                style={{
+                    tickLabels: {
+                        fontSize: 10,
+                        angle: 0,
+                        padding: 12,
+                      }
+                }}
             />
           </VictoryChart>
-      </div>
-     
     </>
   )
 }
 
-export default LineChart_basic
+export default StudentsOverview

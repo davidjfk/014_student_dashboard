@@ -36,10 +36,12 @@ import {
 
 import {Container} from '../styles/Container.styled'
 import {ClientListAreaStyled, ClientListStyled, Column, FormControlArea, Headers, Intro, Section1, Section2, Section3} from './ClientList.styled'
+import { StyledFlexbox } from '../styles/Flexbox.styled';
+import { StyledTable } from '../styles/Table.styled';
+import { StyledFlexboxColumn } from '../styles/FlexboxColumn.styled';
 import {wincTheme} from "../styles/wincTheme";
 
 const Scatterplot = () => {
-// part 1: ETL the data: start: 
     const { studentsMockData } = useSelector((state) => state.studentsMockdata);
     log('comp Scatterplot:');
     log(studentsMockData);
@@ -122,101 +124,99 @@ const Scatterplot = () => {
     log(`outliersInarrayWithStudentsAverageFunValues:`);
     log(outliersInarrayWithStudentsAverageFunValues);
     let isOutliersInarrayWithStudentsAverageFunValues = (outliersInarrayWithStudentsAverageFunValues.length == 0) ? "no" : `yes, please investigate: ${outliersInarrayWithStudentsAverageDifficultyValues}` ;
-    // log(isOutliersInarrayWithStudentsAverageFunValues)
-
-// part 1: ETL the data: END 
-
-// part 2: filter-and-sort-comp: business logic: START
-    //2do: put fns to calculate correlation coefficient and outliers in file utils.js
-// part 2: filter-and-sort-comp: business logic: END
-
-// part 3: scatterplot: business logic: START
-    // not applicable
-// part 3: scatterplot: business logic: END
-
-// part 4: scatterplot: dumb component: START      
+     
     return (
     <>
 
-{/* part 4: student profile: dumb component: START  */}
-<Container> 
+    <Container> 
         <ClientListStyled>
             <Intro>scatter plot of assignments (blue) and students (yellow) </Intro>
             <FormControlArea>            
                 <Section1>
-                    <div>Assignments: </div>
-                    <div>correlation coefficient between difficulty and fun:</div>
-                    <div>{correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudentsOn2Decimals}</div>
+                    <StyledTable>
+                        <tr>
+                            <th className="tableTitle">Assignments:</th>
+                        </tr>
+                        <tr>
+                            <th>correlation coefficient between difficulty and fun:</th>
+                        </tr>
+                        <tr>
+                            <th>{correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudentsOn2Decimals}</th>
+                        </tr>
+                    </StyledTable>
                 </Section1>
                 <Section1>
-                    <div>Students: </div>
-                    <div>correlation coefficient between difficulty and fun:</div>
-                    <div>{correlationBetweenDifficultyAndFunForStudentOfAllAssignmentsOn2Decimals}</div>
+                    <StyledTable>
+                        <tr>
+                            <th className="tableTitle">Students:</th>
+                        </tr>
+                        <tr>
+                            <th>correlation coefficient between difficulty and fun:</th>
+                        </tr>
+                        <tr>
+                            <th>{correlationBetweenDifficultyAndFunForStudentOfAllAssignmentsOn2Decimals}</th>
+                        </tr>
+                    </StyledTable>
                 </Section1>
-                <Section1> 
-                    <div>outliers:</div>
-                    <div>Assignments: difficulty: {isOutliersInarrayWithAssignmentAverageDifficultyValues} </div>
-                    <div>Assignments: fun: {isOutliersInarrayWithAssignmentAverageFunValues}</div>
-                    <div>Students: difficulty: {isOutliersInArrayWithStudentsAverageDifficultyValues} </div>
-                    <div>Students: fun: {isOutliersInarrayWithStudentsAverageFunValues} </div>
-                </Section1> 
+                <Section1>
+                    <StyledTable>
+                        <tr>
+                            <th className="tableTitle">VARIABLE:</th>
+                            <th className="tableTitle">RATING OF:</th>
+                            <th className="tableTitle">OUTLIERS:</th>
+                        </tr>
+                        <tr>
+                            <th>assignments</th>
+                            <th>difficulty</th>
+                            <th>{isOutliersInarrayWithAssignmentAverageDifficultyValues} </th>
+                        </tr>
+                        <tr>
+                            <th>assignments</th>
+                            <th>fun</th>
+                            <th>{isOutliersInarrayWithAssignmentAverageFunValues}</th>
+                        </tr>
+                        <tr>
+                            <th>students</th>
+                            <th>difficulty</th>
+                            <th>{isOutliersInArrayWithStudentsAverageDifficultyValues}</th>
+                        </tr>
+                        <tr>
+                            <th>students</th>
+                            <th>fun</th>
+                            <th>{isOutliersInarrayWithStudentsAverageFunValues} </th>
+                        </tr>
+                    </StyledTable>
+                </Section1>
             </FormControlArea>
             <Headers>
-
             </Headers>
         </ClientListStyled>  
     </Container>
-{/* part 4: student profile: dumb component: START   */}
 
     <VictoryChart 
-            theme={wincTheme} 
-            width={300} 
-            height={230}    
-            //domainPadding has no effect.
-            //padding has undesirable effect.
-        //   style={{ data: { fill: "red" } }}
-        //   domain={{ y: [-10, 10] }}
-
-        >
+        theme={wincTheme} 
+        width={300} 
+        height={230}    
+    >
             <VictoryGroup offset={0} 
-                    // tickValues={['1.0', '2.0', '3.0', '4.0', '5.0']}
                     style = {{
-                        // group: {
-                        //     colorScale: [
-                        //       "#F4511E",
-                        //       "#FFF59D",
-                        //       "#DCE775",
-                        //       "#8BC34A",
-                        //       "#00796B",
-                        //       "#006064"
-                        //     ]},
                         data: {
-                            // fill: "yellow",
                             padding: 10,
-                            strokeWidth: 5 // responds to change. 
+                            strokeWidth: 15 
                         },
                         labels: {
                             fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
-                            // fontSize: 8,
-                            // letterSpacing: "normal",
-                            // padding: 8,
-                            // // fill: "#455A64",
-                            // stroke: "transparent",
-                            // strokeWidth: 0
                         }
                     }}            
             >
-                {/* bar 1of2: assignments */}
                 <VictoryScatter 
-                    // style={{ data: { fill: "purple" } }} // chart responds to change
-                    // height={100}
                     size={3}
                     symbol= "triangleUp"
                     style = {{
                         data: {
-                            fill: "#D4E7FA", // do not put this prop in Theme. Light-blue from wincacademy.nl
+                            fill: "#D4E7FA", 
                             padding: 0,
-                            strokeWidth: 5 // bar width
+                            strokeWidth: 5 
                         }
                     }}
                     labelComponent={
@@ -227,40 +227,26 @@ const Scatterplot = () => {
                             cornerRadius={8}
                             pointerLength={20}
                             flyoutStyle={{
-                                // stroke: "tomato",
                                 strokeWidth: 1,
-                                // fill: "yellow",
                             }}  
                         />
                     }
                     data={arrayWithAssignmentObjects}
                     x = "difficulty"
                     y = "fun"
-                    // tickValues={['1.0', '2.0', '3.0', '4.0', '5.0']}
                     tickValues={[1, 2, 3, 4, 5]}
                     tickFormat={arrayWithAssignmentObjects.map(
                         avg => avg.difficulty
                         )}
                 />
-                {/* bar 2of2: students */}
                 <VictoryScatter 
                     size={2}
                     style = {{
                         data: {
-                            fill: "#FCD808", // do not put this prop in Theme. Yellow from wincacademy.nl.
+                            fill: "#FCD808", 
                             padding: 0,
-                            strokeWidth: 5 // bar width
-                            
+                            strokeWidth: 5 
                         }
-                        // labels: {
-                        //     fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
-                        //     fontSize: 8,
-                        //     letterSpacing: "normal",
-                        //     padding: 38,
-                        //     fill: "#455A64",
-                        //     stroke: "transparent",
-                        //     strokeWidth: 0
-                        // }
                     }}
 
                     labelComponent={
@@ -271,9 +257,7 @@ const Scatterplot = () => {
                             cornerRadius={8}
                             pointerLength={20}
                             flyoutStyle={{
-                                // stroke: "tomato",
                                 strokeWidth: 1,
-                                // fill: "yellow",
                             }} 
                         />
                     }                    
@@ -288,40 +272,19 @@ const Scatterplot = () => {
             </VictoryGroup>
             <VictoryAxis 
                 domain={[1.5, 3.5]}
-                // tickValues specifies both the number of ticks and where
-                // they are placed on the axis
-                // tickValues={[1.0, 2.0, 3, 4, 5]}
-                // tickFormat={arrayWithAssignmentObjects.map(avg => (avg.difficulty + avg.fun)/2)}
-                /*
-                 pitfall: avg.assignmentId will display long names on x-axis: e.g. actual result:
-                 'W3D5 - Project - Todo-List' , instead of the expected result (to save space on x-axis) 'W3D5'.
-                */ 
-                
-                // label="average difficulty rating"
                 standalone={false}
                 label={() => ""}
                 axisLabelComponent={<VictoryLabel dx={0} dy={0} text="average difficulty rating" />}
                 style={{
                     axisLabel: {
-                        // fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
                         fontSize: 5,
-                        
                         angle: 0,
-                        // letterSpacing: "normal",
                         padding: 14,
-                        // fill: "#455A64",
-                        // stroke: "transparent",
-                        // strokeWidth: 0
                     },
                     tickLabels: {
-                        // fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
                         fontSize: 4,
                         angle: 0,
-                        // letterSpacing: "normal",
                         padding: 1,
-                        // fill: "#455A64",
-                        // stroke: "transparent",
-                        // strokeWidth: 0
                     },
                     ticks: {
                         fill: "transparent",
@@ -335,34 +298,19 @@ const Scatterplot = () => {
             />
             <VictoryAxis dependentAxis 
                 domain={[1.5, 4.5]}
-                // label="average fun rating"
                 standalone={false}
                 label={() => ""}
                 axisLabelComponent={<VictoryLabel dx={0} dy={4} text="average fun rating" />}
-                // tickValues={[1, 2, 3, 4, 5]}
-                // tickFormat={arrayWithAssignmentObjects.map(avg => (avg.difficulty + avg.fun)/2)} 
                 style={{
                     axisLabel: {
-                        // fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
                         fontSize: 5,
-                        
                         angle: -90,
-                        // letterSpacing: "normal",
                         padding: 20,
-                        // fill: "#455A64",
-                        // stroke: "transparent",
-                        // strokeWidth: 0
                     },
                     tickLabels: {
-                        // fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
                         fontSize: 4,
-                        
                         angle: 0,
-                        // letterSpacing: "normal",
                         padding: 1,
-                        // fill: "#455A64",
-                        // stroke: "transparent",
-                        // strokeWidth: 0
                     },                                   
 
                     ticks: {
@@ -376,7 +324,6 @@ const Scatterplot = () => {
                 }}
             />
     </VictoryChart>
-{/* // part 4: scatterplot: dumb component: END  */}
     </>
   )
 }

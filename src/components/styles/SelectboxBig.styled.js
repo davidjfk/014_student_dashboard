@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-export const StyledSelectbox = styled.select`
-  height: 2rem;
+export const StyledSelectboxBig = styled.select`
+  height: 20rem;
   font-size: ${({ theme}) => theme.fontSize.default };
   padding-left: 0.6rem;
   padding-right: 0.6rem;
