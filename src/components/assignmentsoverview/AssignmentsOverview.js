@@ -118,6 +118,7 @@ const AssignmentsOverview = () => {
                             onChange={handleChangeBoolDifficultyRating}
                         />
                     </StyledCheckbox>
+
                 </Section1>
                 <Section1>
                     <StyledCheckbox>
@@ -128,6 +129,7 @@ const AssignmentsOverview = () => {
                         />
                     </StyledCheckbox>
                 </Section1>
+
                 <Section1> 
                     <StyledSelectbox                  
                         onChange={(e) => setAssignmentObjectKeyToSortArrayWithAssignments(e.target.value)}                 
@@ -150,6 +152,7 @@ const AssignmentsOverview = () => {
             </Headers>
         </ClientListStyled>  
     </Container>
+
         <VictoryChart 
             theme={wincTheme} 
             width={800} 

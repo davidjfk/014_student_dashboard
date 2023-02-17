@@ -1,44 +1,25 @@
-
-import React, { useState, useEffect } from 'react';
-
 import { useSelector } from "react-redux";
-
 import {
-    VictoryZoomContainer,
-    VictoryBrushContainer,
-    VictoryBar,
     VictoryChart,
     VictoryGroup,
     VictoryTooltip,
     VictoryLabel,
-    VictoryLine,
-    VictoryPie,
     VictoryScatter,
     VictoryAxis 
 } from "victory";
-
-import {BrushAndZoomWithBarChart} from '../brushAndZoomWithBarChart/BrushAndZoomWithBarChart'
-
 import {
-    calculateAverageForDifficultyForOneAssignmentOfAllStudents,
-    calculateAverageForFunForOneAssignmentOfAllStudents,
     correlationCoefficientBetween2Arrays,
     createArrayWithAssignmentObjects,
-
     createAssignmentObjectForEachAssignmentId,
     createArrayWithPropertyValueFromEachArrayObject,
     createArrayWithUniqueValues, 
-
     createStudentObjectForEachStudentId,
     createArrayWithStudentObjects,
     filterOutliers,
     log } from '../../utils';
-
 import {Container} from '../styles/Container.styled'
-import {ClientListAreaStyled, ClientListStyled, Column, FormControlArea, Headers, Intro, Section1, Section2, Section3} from './ClientList.styled'
-import { StyledFlexbox } from '../styles/Flexbox.styled';
+import {ClientListStyled, FormControlArea, Headers, Intro, Section1} from './ClientList.styled'
 import { StyledTable } from '../styles/Table.styled';
-import { StyledFlexboxColumn } from '../styles/FlexboxColumn.styled';
 import {wincTheme} from "../styles/wincTheme";
 
 const Scatterplot = () => {
@@ -52,82 +33,45 @@ const Scatterplot = () => {
         for each assignment you can see "on average" how the perceived fun-score and difficult-score correlate. 
     */
     const arrayWithUniqueAssignmentIds = createArrayWithUniqueValues(studentsMockData, "assignmentId");
-    log(`comp scatterplot1: arrayWithUniqueAssignmentIds: `)
-    log(arrayWithUniqueAssignmentIds);
-    
     const arrayWithAssignmentObjects = createArrayWithAssignmentObjects(createAssignmentObjectForEachAssignmentId, studentsMockData, arrayWithUniqueAssignmentIds);
-    log(`comp scatterplot1: arrayWithAssignmentObjects: `)
-    log(arrayWithAssignmentObjects);  
-
-
+ 
     /*
         scatterplot 2: students:
         All students (10) on X-axis with their individual average fun-socre andon Y-axis with their individual average difficult-score: so 
         for each student you can see how the average fun correlates with average diffiicult.
     */
-        const arrayWithUniqueStudents = createArrayWithUniqueValues(studentsMockData, "studentName");
-        log(`comp scatterplot2: arrayWithUniqueStudents: `)
-        log(arrayWithUniqueStudents);
+    const arrayWithUniqueStudents = createArrayWithUniqueValues(studentsMockData, "studentName");
+    const arrayWithUniqueStudentObjects = createArrayWithStudentObjects(createStudentObjectForEachStudentId, studentsMockData, arrayWithUniqueStudents);
 
-        const arrayWithUniqueStudentObjects = createArrayWithStudentObjects(createStudentObjectForEachStudentId, studentsMockData, arrayWithUniqueStudents);
-        log(`comp scatterplot2: arrayWithUniqueStudentObjects: `)
-        log(arrayWithUniqueStudentObjects);  
-
-
-    //  correlation coefficient: assignments:
-    log(`arrayWithAssignmentAverageDifficultyValues:`)
+    //  correlation coefficient: assignments and students:
     let arrayWithAssignmentAverageDifficultyValues = createArrayWithPropertyValueFromEachArrayObject(arrayWithAssignmentObjects, "difficulty");
-    log(arrayWithAssignmentAverageDifficultyValues);
-    
-    log(`arrayWithAssignmentAverageFunValues:`)
     let arrayWithAssignmentAverageFunValues = createArrayWithPropertyValueFromEachArrayObject(arrayWithAssignmentObjects, "fun");
-    log(arrayWithAssignmentAverageFunValues);
-
-    //  correlation coefficient: students:
-    log(`arrayWithStudentAverageDifficultyValues:`)
     let arrayWithStudentAverageDifficultyValues = createArrayWithPropertyValueFromEachArrayObject(arrayWithUniqueStudentObjects, "difficulty");
-    log(arrayWithStudentAverageDifficultyValues);
-
-    log(`arrayWithStudentAverageFunValues:`)
     let arrayWithStudentAverageFunValues = createArrayWithPropertyValueFromEachArrayObject(arrayWithUniqueStudentObjects, "fun");
-    log(arrayWithStudentAverageFunValues);
-
     let correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudents = correlationCoefficientBetween2Arrays(arrayWithAssignmentAverageDifficultyValues, arrayWithAssignmentAverageFunValues);
-    log(`correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudents:`);
-    log(correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudents);
     let correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudentsOn2Decimals = parseFloat(correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudents.toFixed(2));
-    log(correlationBetweenDifficultyAndFunForEachAssignmentOfAllStudentsOn2Decimals);
-
     let correlationBetweenDifficultyAndFunForStudentOfAllAssignments = correlationCoefficientBetween2Arrays(arrayWithStudentAverageDifficultyValues, arrayWithStudentAverageFunValues);
-    log(`correlationBetweenDifficultyAndFunForStudentOfAllAssignments:`);
-    log(correlationBetweenDifficultyAndFunForStudentOfAllAssignments);
     let correlationBetweenDifficultyAndFunForStudentOfAllAssignmentsOn2Decimals = parseFloat(correlationBetweenDifficultyAndFunForStudentOfAllAssignments.toFixed(2));
-    log(correlationBetweenDifficultyAndFunForStudentOfAllAssignmentsOn2Decimals);
 
     // check data for outliers:
     let outliersInarrayWithAssignmentAverageDifficultyValues = filterOutliers(arrayWithAssignmentAverageDifficultyValues);
-    log(`outliersInarrayWithAssignmentAverageDifficultyValues:`);
-    log(outliersInarrayWithAssignmentAverageDifficultyValues);
-    let isOutliersInarrayWithAssignmentAverageDifficultyValues = (outliersInarrayWithAssignmentAverageDifficultyValues.length == 0) ? "no" : "yes, please investigate" ;
+    let isOutliersInarrayWithAssignmentAverageDifficultyValues = (outliersInarrayWithAssignmentAverageDifficultyValues.length == 0) ? 
+    "no" : `yes, please investigate: ${outliersInarrayWithAssignmentAverageDifficultyValues.toString().split(',')}`;
 
     let outliersInarrayWithAssignmentAverageFunValues = filterOutliers(arrayWithAssignmentAverageFunValues);
-    log(`outliersInarrayWithAssignmentAverageFunValues:`);
-    log(outliersInarrayWithAssignmentAverageFunValues);
-    let isOutliersInarrayWithAssignmentAverageFunValues = (outliersInarrayWithAssignmentAverageFunValues.length == 0) ? "no" : "yes, please investigate" ;
+    let isOutliersInarrayWithAssignmentAverageFunValues = (outliersInarrayWithAssignmentAverageFunValues.length == 0) ? 
+    "no" : `yes, please investigate: ${outliersInarrayWithAssignmentAverageFunValues.toString().split(',')}`;
 
     let outliersInarrayWithStudentsAverageDifficultyValues = filterOutliers(arrayWithStudentAverageDifficultyValues);
-    log(`outliersInarrayWithStudentsAverageDifficultyValues:`);
-    log(outliersInarrayWithStudentsAverageDifficultyValues);
-    let isOutliersInArrayWithStudentsAverageDifficultyValues = (outliersInarrayWithStudentsAverageDifficultyValues.length == 0) ? "no" : "yes, please investigate" ;
+    let isOutliersInArrayWithStudentsAverageDifficultyValues = (outliersInarrayWithStudentsAverageDifficultyValues.length == 0) ? 
+    "no" : `yes, please investigate: ${outliersInarrayWithStudentsAverageDifficultyValues.toString().split(',')}`;
 
     let outliersInarrayWithStudentsAverageFunValues = filterOutliers(arrayWithStudentAverageFunValues);
-    log(`outliersInarrayWithStudentsAverageFunValues:`);
-    log(outliersInarrayWithStudentsAverageFunValues);
-    let isOutliersInarrayWithStudentsAverageFunValues = (outliersInarrayWithStudentsAverageFunValues.length == 0) ? "no" : `yes, please investigate: ${outliersInarrayWithStudentsAverageDifficultyValues}` ;
+    let isOutliersInarrayWithStudentsAverageFunValues = (outliersInarrayWithStudentsAverageFunValues.length == 0) ? 
+    "no" : `yes, please investigate: ${outliersInarrayWithStudentsAverageFunValues.toString().split(',')}`;
      
     return (
     <>
-
     <Container> 
         <ClientListStyled>
             <Intro>scatter plot of assignments (blue) and students (yellow) </Intro>
@@ -162,7 +106,7 @@ const Scatterplot = () => {
                     <StyledTable>
                         <tr>
                             <th className="tableTitle">VARIABLE:</th>
-                            <th className="tableTitle">RATING OF:</th>
+                            <th className="tableTitle">RATING:</th>
                             <th className="tableTitle">OUTLIERS:</th>
                         </tr>
                         <tr>

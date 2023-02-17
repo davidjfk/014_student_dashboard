@@ -30,7 +30,7 @@ export const studentUserProfiles =
     "phone": "06-27096313",
     "email": "Hector.Schroeder@studentdashboard.com",
     "age": "24",
-    "studentPhoto": "https://images.unsplash.com/photo-1493106819501-66d381c466f1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjA1fHxwZXJzb258ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"  
+    "studentPhoto": "https://images.unsplash.com/photo-1608932931398-80f38fc81740?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"  
     }, {
     "studentName": "Martina",
     "lastName": "Osinski",

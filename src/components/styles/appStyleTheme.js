@@ -23,6 +23,7 @@ export const theme = {
           medium: "1.2rem",
           mediumDefault: "1.3rem",
           default: "1.4rem",
+          defaultBig: "1.6rem",
           big: "1.9rem"
       }
   };

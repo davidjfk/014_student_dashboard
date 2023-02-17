@@ -2,23 +2,12 @@ import React, { useState, useEffect, useRef} from 'react';
 import { useSelector } from "react-redux";
 
 import { Checkbox } from '../checkbox/Checkbox';
-import {Container} from '../styles/Container.styled'
+import {Container} from '../styles/Container.styled';
+import ClientInClientList from './ClientInClientList';
 import {ClientListAreaStyled, ClientListStyled, Column, FormControlArea, Headers, Intro, Section1, Section2, Section3} from './ClientList.styled'
 import {StyledSelectbox} from '../styles/Selectbox.styled';
 import { StyledSelectboxBig } from '../styles/SelectboxBig.styled';
-import {
-    VictoryZoomContainer,
-    VictoryBar,
-    VictoryChart,
-    VictoryGroup,
-    VictoryTooltip,
-    VictoryAxis 
-} from "victory";
-
-
-import {createArrayWithUniqueValues, log } from '../../utils';
-
-import {wincTheme} from "../styles/wincTheme";
+import {createArrayWithUniqueValues, log } from '../../utils'
 import { StyledCheckbox } from '../styles/Checkbox.styled';
 
 const StudentsOverview = () => {
@@ -209,7 +198,6 @@ const StudentsOverview = () => {
                     <StyledSelectbox                  
                         onChange={(e) => setAssignmentObjectKeyToSortArrayWithAssignments(e.target.value)}               
                     >      
-                        <option value="" >Sort by:</option>
                         <option value="" >do not sort</option>
                         <option value="difficulty ascending" >difficulty a-z</option> 
                         <option value="difficulty descending" >difficulty z-a</option>
@@ -277,7 +265,6 @@ const StudentsOverview = () => {
                         onMouseOver={handleMouseOver} 
                         onMouseOut={handleMouseOut}                 
                     >    
-                        <option value="" >Filter on assignments:</option>
                         <option value="" >do not filter</option>  
                         {listOfUniqueAssignmentIds.map(item => {  
                             return (<option key={item} value={item}>{item}</option>);
@@ -288,120 +275,33 @@ const StudentsOverview = () => {
                 </Section3>
             </FormControlArea>
             <Headers>
-
+                <Column>
+                    <span>Student Id</span>
+                </Column>
+                <Column>
+                    <span>Student Name</span>
+                </Column>
+                <Column>
+                    <span>Assignment</span>
+                </Column>
+                <Column>
+                    <span>Assignment Difficulty</span>
+                </Column>
+                <Column>
+                    <span>Assignment Fun</span>
+                </Column>
             </Headers>
+            <ClientListAreaStyled>
+                { arrayWithFilteredStudentObjects.length !== 0 ? arrayWithFilteredStudentObjects.map((item, id) => {                                         
+                    return ( 
+                    <ClientInClientList key={id} item={item}  />
+                    )})
+                    : 
+                    <>No student data to display.</>
+                }
+            </ClientListAreaStyled>        
         </ClientListStyled>  
     </Container>
-        <VictoryChart 
-            theme={wincTheme} 
-            width={800} 
-            height={350}    
-            containerComponent={
-                <VictoryZoomContainer 
-                zoomDimension="x" 
-                zoomDomain={zoomDomain}
-                />
-            }
-        >
-            <VictoryGroup offset={10} 
-                    style = {{
-                        data: {
-                            padding: 10,
-                            strokeWidth: 5 
-                        },
-                        labels: {
-                            fontFamily: "'Roboto', 'Helvetica Neue', Helvetica, sans-serif",
-                            fontSize: 8,
-                            letterSpacing: "normal",
-                            padding: 18,
-                            stroke: "transparent",
-                            strokeWidth: 0
-                        }
-                    }}            
-            >
-                <VictoryBar 
-                    groupComponent={<g transform="translate(-1, -2)" />}
-                    barWidth={5}
-                   height={100}
-                    style = {{
-                        data: {
-                            fill: "#D4E7FA", 
-                            padding: 0,
-                            strokeWidth: 5 
-                        }
-                    }}
-                    labelComponent={
-                        <VictoryTooltip   
-                            style={{fontSize: '10px'}}
-                            flyoutWidth={310}
-                            flyoutHeight={60}
-                            cornerRadius={8}
-                            pointerLength={20}
-                            flyoutStyle={{strokeWidth: 1}}  
-                        />
-                    }
-                    data={arrayWithFilteredStudentObjects}
-                    x = "studentName"
-                    y = "difficulty"
-                    tickValues={[1, 2, 3, 4, 5]}
-                    tickFormat={arrayWithFilteredStudentObjects.map(
-                        avg => avg.studentName
-                        )}
-                />
-                <VictoryBar 
-                    groupComponent={<g transform="translate(2, -2)" />}
-                    barWidth={5}
-                    style = {{
-                        data: {
-                            fill: "#FCD808", 
-                            padding: 0,
-                            strokeWidth: 5 
-                        },
-                    }}
-
-                    labelComponent={
-                        <VictoryTooltip 
-                            style={{fontSize: '10px'}}
-                            flyoutWidth={310}
-                            flyoutHeight={60}
-                            cornerRadius={8}
-                            pointerLength={20}
-                            flyoutStyle={{strokeWidth: 1}} 
-                        />
-                    }                    
-                    data={arrayWithFilteredStudentObjects}
-                    x = "studentName"
-                    y = "fun"
-                    tickValues={[1, 2, 3, 4, 5]}
-                    tickFormat={arrayWithFilteredStudentObjects.map(
-                        avg => avg.studentName
-                        )}
-                />   
-            </VictoryGroup>
-            <VictoryAxis 
-                tickFormat={arrayWithFilteredStudentObjects.map(
-                avg => avg.studentName 
-                )}
-                label="Student Names"
-                style={{
-                    tickLabels: {
-                        fontSize: 10,
-                        angle: 0,
-                        padding: 12,
-                      }
-                }}
-            />
-            <VictoryAxis dependentAxis 
-                label="Rating of student difficulty (blue) and fun (yellow)"
-                style={{
-                    tickLabels: {
-                        fontSize: 10,
-                        angle: 0,
-                        padding: 12,
-                      }
-                }}
-            />
-          </VictoryChart>
     </>
   )
 }
